@@ -33,41 +33,11 @@
         template: `
                     <ul class="pagination-list">
                         <li class="list-item" v-for="page in pages">
-                            <a :href="'http://localhost/curation/public/movieList?page=' + page">{{page}}</a>
+                            <button  v-on:click="$emit('page-change',page)">{{page}}</button>
                         </li>
                     </ul>
-
                   `
     })
-
-    //<ul class="pagination-list">
-    //    <?php
-    //    for($p = $start_page; $p <= $end_page; ++$p):
-    //    ?>
-    //    <li class="list-item"><a href="?page=<?php //echo $p ?>//"><?php //echo $p ?>//</a></li>
-    <?php
-    //endfor;
-    //?>
-    //</ul>
-
-
-
-    //<ul class="pagination-list">
-    //    <?php
-    //    for($p = $start_page; $p <= $end_page; ++$p):
-    //    ?>
-    //    <li class="list-item"><a href="?page=<?php //echo $p ?>//"><?php //echo $p ?>//</a></li>
-    <?php
-    //endfor;
-    //?>
-    //</ul>
-
-
-    //<!--                <a href="movieDetail.php?movie_id=--><?php ////echo $rec['movie_id'] ?>//<!--" class="panel">-->
-    //<!--                    <img src="./assets/img/--><?php ////echo $rec['movie_id'] ?>//<!--.jpg" alt="--><?php ////echo $rec['title'] ?>//<!--">-->
-    //    <!--                    <p class="panel-title">--><?php ////echo $rec['title'] ?>//<!--</p>-->
-    //    <!--                </a>-->
-
 
     new Vue({
         el: '#movie_list',
@@ -76,12 +46,39 @@
                 info: null
             }
         },
+        methods: {
+            onPageChange: function (page) {
+                axios
+                    .get('http://localhost/curation/public/movies/list.json?page=' + page)
+                    .then(response => (this.info = response.data))
+            }
+        },
         mounted () {
-            axios
-                .get('http://localhost/curation/public/movies/list.json?')
-                .then(response => (this.info = response.data))
+            this.onPageChange(1)
         }
+
     })
+
+    new Vue({
+        el: '#favorite_list',
+        data () {
+            return {
+                info: null
+            }
+        },
+        methods: {
+            onPageChange: function (page) {
+                axios
+                    .get('http://localhost/curation/public/movies/list.json?page=' + page + '&favorite=on')
+                    .then(response => (this.info = response.data))
+            }
+        },
+        mounted () {
+            this.onPageChange(1)
+        }
+
+    })
+
 
     // $(function() {
     //

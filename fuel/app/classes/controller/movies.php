@@ -13,18 +13,26 @@ class Controller_Movies extends Controller_Rest{
     public function get_list(){
 
         //GETパラメータ取得
-        $keyword = Input::Get('keyword');
-        $page    = Input::Get('page');
+        $keyword  = Input::Get('keyword');
+        $page     = Input::Get('page');
+        $favorite = Input::Get('favorite');
+
         if(is_null($page)){
             $page = 1;  //page指定が無い時は1ページ目とみなす
         }
-
         $limit_offset = 'LIMIT '.self::PAGE_DATA_NUM.' OFFSET '.(($page - 1) * self::PAGE_DATA_NUM);
+
         $sql = '';
-        if(!is_null($keyword)){
-            $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN SEARCH_TAGS ON MOVIE_LIST.MOVIE_ID = SEARCH_TAGS.MOVIE_ID WHERE SEARCH_TAGS.KEYWORD = \''.$keyword.'\'';
+        if(is_null($favorite)) {
+            //通常検索orタグ検索
+            if(!is_null($keyword)){
+                $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN SEARCH_TAGS ON MOVIE_LIST.MOVIE_ID = SEARCH_TAGS.MOVIE_ID WHERE SEARCH_TAGS.KEYWORD = \''.$keyword.'\'';
+            }else{
+                $sql = 'SELECT * FROM MOVIE_LIST ';
+            }
         }else{
-            $sql = 'SELECT * FROM MOVIE_LIST ';
+            //お気に入り一覧
+            $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN FAVORITE ON MOVIE_LIST.MOVIE_ID = FAVORITE.MOVIE_ID WHERE FAVORITE.USERNAME = \''.Auth::get_screen_name().'\'' ;
         }
         //レコード総件数取得
         $result = DB::query($sql,DB::SELECT)->execute();
