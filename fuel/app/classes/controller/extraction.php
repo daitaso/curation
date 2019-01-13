@@ -27,7 +27,14 @@ class Controller_Extraction extends Controller
 
         //詳細ページへのa要素のリストを取得
         $as = $html->find('a[href^=/video/]');
+
+        Log::info(count($as));
+        $cnt = 0;
+
         foreach( $as as $a ){
+
+            $cnt ++;
+            Log::info($cnt);
 
             //詳細ページへのURLを解析
             $detail_url = $a->getAttribute('href');
@@ -60,23 +67,27 @@ class Controller_Extraction extends Controller
             //共有タグ
             $embed_tag = $detail_html->find('iframe')[0]->outertext;
 
-            DB::insert('movie_list')->set(array(
+            $query = DB::insert('movie_list');
+            $query->set(array(
                 'site_nm'  => 'tokyomotion',
                 'movie_id' => $movie_id,
                 'embed_tag'    => $embed_tag,
                 'title'    => $title,
-                'created_at' => date('Y-m-d H:i:s'),
-            ))->execute();
+                'created_at' => date('Y-m-d H:i:s'),));
+            $query->execute();
+            $query->reset();
 
             //検索タグ抽出
             $keywords = $detail_html->find('meta[name=keywords]',0)->getAttribute('content');
             $keywords = explode(',',$keywords);
             foreach ($keywords as $keyword) {
-                DB::insert('search_tags')->set(array(
+                $query = DB::insert('search_tags');
+                $query->set(array(
                     'movie_id' => $movie_id,
                     'keyword' => trim(mb_convert_kana($keyword, "s", 'UTF-8')), //全角空白のtrim
-                    'created_at' => date('Y-m-d H:i:s'),
-                ))->execute();
+                    'created_at' => date('Y-m-d H:i:s'),));
+                $query->execute();
+                $query->reset();
             }
         }
 

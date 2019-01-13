@@ -66,13 +66,14 @@ class Controller_Movies extends Controller_Rest{
 
         //表示データインデックス（ヘッダー用）
         $start_idx = ($page - 1) * self::PAGE_DATA_NUM;
-        $end_idx   = $start_idx + self::PAGE_DATA_NUM;
+        $end_idx   = $start_idx + count($result);
 
         return $this->response(array(
             'movie_list' => $result,
             'pages'      => $pages,
             'start_idx'  => $start_idx,
-            'end_idx'    => $end_idx
+            'end_idx'    => $end_idx,
+            'keyword'    => $keyword
         ));
     }
 }

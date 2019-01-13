@@ -2,7 +2,7 @@
     <section class="site-width">
         <div id="favorite_list">
             <h1>お気に入り一覧</h1>
-            <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx"></search-result-header>
+            <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword"></search-result-header>
             <div class="panel-list">
                 <thumb-panel
                         v-for="movie in info.movie_list"

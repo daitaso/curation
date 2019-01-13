@@ -14,6 +14,8 @@
             <p><?php echo $rec['created_at'] ?></p>
             <p><?php echo $rec['user_name'] ?></p>
             <p><?php echo $rec['review'] ?></p>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
             <p><?php echo $rec['comment'] ?></p>
         <?php
         endforeach;

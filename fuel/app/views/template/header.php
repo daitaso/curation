@@ -29,7 +29,6 @@ endif;
                     <li><a href="login.php">ログイン</a></li>
                     <li><a href="signup.php">サインアップ</a></li>
                 <?php } ?>
-                <li><a href="tagSearch.php">タグ検索</a></li>
                 <li><a href="movieList.php">動画一覧</a></li>
             </ul>
         </nav>
