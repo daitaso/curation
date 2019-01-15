@@ -5,7 +5,6 @@
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
 <script src="https://code.jquery.com/jquery-3.0.0.min.js"   integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="   crossorigin="anonymous"></script>
-<?=Asset::js('jquery.barrating.min.js')?>
 <?=Asset::js('fixfooter.js')?>
 
 <script>
@@ -55,6 +54,117 @@
         template:
                   `
                     <button  v-on:click="onTagChange(keyword)">{{keyword}}</button>
+                  `
+    })
+
+    //評価入力
+    Vue.component('review-input', {
+        props:['movie_id'],
+        data:  ()=> {
+            return {
+                star_count: 1,
+                input_text: ''
+            }
+        },
+        methods:{
+            //星がクリックされた
+            onStarChange: function (e) {
+
+                let base_attr = e.currentTarget.getAttribute('class')
+                this.star_count = 0
+
+                //押された☆の左側をactiveにする
+                base_attr = base_attr.replace(' active','')
+                let el = e.currentTarget.previousElementSibling
+                while (el) {
+                    el.setAttribute('class',base_attr + ' active')
+                    el = el.previousElementSibling;
+                    this.star_count++
+                }
+                //押された☆をactiveにする
+                e.currentTarget.setAttribute('class',base_attr + ' active')
+                this.star_count++
+
+                //押された☆の右側を非activeにする
+                el = e.currentTarget.nextElementSibling
+                while (el) {
+                    el.setAttribute('class',base_attr)
+                    el = el.nextElementSibling
+                }
+            },
+            onKeyUp: function(e){
+                this.input_text = e.currentTarget.value
+            },
+            //送信ボタンクリック
+            onSubmit: function (e) {
+
+                axios.post('http://localhost/curation/public/comments/list.json', {
+                    movie_id: this.movie_id,
+                    comment:  this.input_text,
+                    review:   this.star_count
+                })
+            }
+        },
+        template:
+            `
+                <div class="root">
+                    <div class="review-star-input">
+                        <i class="fas fa-star icn-star active" @click="onStarChange"></i>
+                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
+                    </div>
+                    <div class="review-text-input">
+                        <textarea @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="どうでしたか？"></textarea>
+                        <button @click="onSubmit">送信</button>
+                    </div>
+                </div>
+             `
+    })
+
+    //評価パネルリスト
+    Vue.component('review-panel-list', {
+        props:['movie_id'],
+        data () {
+            return {
+                info: null
+            }
+        },
+        mounted () {
+            let url = 'http://localhost/curation/public/comments/list.json?movie_id=' + this.movie_id
+            console.log(url)
+            axios
+                .get(url)
+                .then(response => (this.info = response.data))
+        },
+        template: `
+                    <div>
+                        <review-panel v-for="comment in info.comment_list" :comment="comment"></review-panel>
+                    </div>
+                  `
+    })
+
+    //評価パネル
+    Vue.component('review-panel', {
+        props:['comment'],
+        computed: {
+            Review: function (){
+                return Number(this.comment.review)
+            },
+            zeroReview: function () {
+                return 5 - this.comment.review
+            }
+        },
+        template: `
+                    <div class="review-area">
+                        <ul>
+                            <li v-for="n in this.Review" ><i class="fas fa-star icn-star active"></i></li>
+                            <li v-for="n in this.zeroReview" ><i class="fas fa-star icn-star "></i></li>
+                        </ul>
+                        <p>{{comment.user_name}}{{comment.created_at}}</p>
+                        <p>{{comment.comment}}</p>
+                    </div>
                   `
     })
 
@@ -125,6 +235,19 @@
         }
     })
 
+    new Vue({
+        el: '#review_input',
+        data () {
+            return {
+                info: null
+            }
+        }
+    })
+
+    new Vue({
+        el: '#review_list'
+    })
+
     $(function() {
 
         var $toggleMsg = $('.js-toggle-msg');
@@ -133,20 +256,15 @@
             setTimeout(function(){ $toggleMsg.slideUp(); },3000);
         }
 
-        //星５段階評価
-        $('#example').barrating({
-            theme: 'fontawesome-stars'
-        });
-
         // お気に入り登録・削除
         var $like,
             likeMovieId;
-        $like = $('.js-click-like') || null; //nullというのはnull値という値で、「変数の中身は空ですよ」と明示するためにつかう値
+        $like = $('.js-click-like') || null;
         likeMovieId = $like.data('movie_id') || null;
-        // 数値の0はfalseと判定されてしまう。product_idが0の場合もありえるので、0もtrueとする場合にはundefinedとnullを判定する
         if(likeMovieId !== undefined && likeMovieId !== null){
             $like.on('click',function(){
                 var $this = $(this);
+
                 $.ajax({
                     type: "POST",
                     url: "ajaxLike.php",
@@ -155,6 +273,7 @@
                     console.log('Ajax Success');
                     // クラス属性をtoggleでつけ外しする
                     $this.toggleClass('active');
+
                 }).fail(function( msg ) {
                     console.log('Ajax Error');
                 });
