@@ -103,6 +103,8 @@
                     comment:  this.input_text,
                     review:   this.star_count
                 })
+                eventHub.$emit('comment-update',this.movie_id)
+
             }
         },
         template:
@@ -131,12 +133,23 @@
                 info: null
             }
         },
+        methods:{
+            onCommentUpdate: function (movie_id) {
+                let url = 'http://localhost/curation/public/comments/list.json?movie_id=' + movie_id
+                console.log(url)
+                axios
+                    .get(url)
+                    .then(response => (this.info = response.data))
+            }
+        },
+        created(){
+            eventHub.$on('comment-update', this.onCommentUpdate)
+        },
+        beforeDestroy() {
+            eventHub.$off('comment-update', this.onCommentUpdate)
+        },
         mounted () {
-            let url = 'http://localhost/curation/public/comments/list.json?movie_id=' + this.movie_id
-            console.log(url)
-            axios
-                .get(url)
-                .then(response => (this.info = response.data))
+            this.onCommentUpdate(this.movie_id)
         },
         template: `
                     <div>
