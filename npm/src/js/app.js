@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios';
 import $ from 'jquery';
+import moment from 'moment';
 
 //イベントハブ
 let eventHub = new Vue()
@@ -9,17 +10,25 @@ let eventHub = new Vue()
 Vue.component('search-result-header', {
   props:['start_idx','end_idx','keyword'],
   template: `
-                    <h2>検索結果　{{ start_idx + 1 }}　―　{{ end_idx }} キーワード　{{keyword}}</h2>
+                    <h1>検索結果　{{ start_idx + 1 }}　―　{{ end_idx }} キーワード　{{keyword}}</h1>
                   `
 })
 
 //サムネイルパネル
 Vue.component('thumb-panel', {
-  props:['movie_id','title'],
-  template: `
+  props:['movie_id','title','created_at'],
+  computed: {
+    fromNow: function (){
+      var date = this.created_at;
+      moment.locale( 'ja' );
+      return moment(date, 'YYYY/MM/DD HH:mm:S').fromNow();
+    }
+    },
+    template: `
                     <a :href="'movieDetail.php?movie_id=' + movie_id " class="panel">
                         <img :src="'./assets/img/' + movie_id + '.jpg'" :alt="title">
                         <p class="panel-title">{{title}}</p>
+                        <span class="panel-fromnow">{{this.fromNow}}</span>
                     </a>
                   `
 })
@@ -30,7 +39,7 @@ Vue.component('pagenation', {
   template: `
                     <ul class="pagination-list">
                         <li class="list-item" v-for="page in pages">
-                            <button  v-on:click="$emit('page-change',page,keyword)">{{page}}</button>
+                            <button class="page-button" v-on:click="$emit('page-change',page,keyword)">{{page}}</button>
                         </li>
                     </ul>
                   `
@@ -46,7 +55,7 @@ Vue.component('tag-panel', {
   },
   template:
       `
-                    <button  v-on:click="onTagChange(keyword)">{{keyword}}</button>
+                    <button class="tag-button" v-on:click="onTagChange(keyword)">{{keyword}}</button>
                   `
 })
 
@@ -95,8 +104,11 @@ Vue.component('review-input', {
         movie_id: this.movie_id,
         comment:  this.input_text,
         review:   this.star_count
-      })
-      eventHub.$emit('comment-update',this.movie_id)
+      }).then(response => {
+          eventHub.$emit('comment-update',this.movie_id)
+      }).catch(error => {
+        console.log(error);
+      });
 
     }
   },
@@ -129,10 +141,10 @@ Vue.component('review-panel-list', {
   methods:{
     onCommentUpdate: function (movie_id) {
       let url = 'http://localhost/curation/public/comments/list.json?movie_id=' + movie_id
-      console.log(url)
       axios
           .get(url)
           .then(response => (this.info = response.data))
+      console.log(this.info)
     }
   },
   created(){
@@ -160,6 +172,11 @@ Vue.component('review-panel', {
     },
     zeroReview: function () {
       return 5 - this.comment.review
+    },
+    fromNow: function (){
+      var date = this.comment.created_at
+      moment.locale( 'ja' )
+      return moment(date, 'YYYY/MM/DD HH:mm:S').fromNow()
     }
   },
   template: `
@@ -168,7 +185,7 @@ Vue.component('review-panel', {
                             <li v-for="n in this.Review" ><i class="fas fa-star icn-star active"></i></li>
                             <li v-for="n in this.zeroReview" ><i class="fas fa-star icn-star "></i></li>
                         </ul>
-                        <p>{{comment.user_name}}{{comment.created_at}}</p>
+                        <p>{{comment.user_name}}<span class="from-now">{{this.fromNow}}</span></p>
                         <p>{{comment.comment}}</p>
                     </div>
                   `

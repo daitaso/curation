@@ -16,20 +16,21 @@ if(!empty($errMsg)):
     <?php
 endif;
 ?>
-
 <header>
     <div class="site-width">
-        <h1><a href="home.php">DOUGA-CURATION</a></h1>
-        <nav id="top-nav">
+        <div class="logo-container">
+            <a href="home.php"><?=Asset::img('logo.png')?></a>
+        </div>
+        <nav >
             <ul>
-                <?php if(Auth::check()) { ?>
-                    <li><a href="logout.php">ログアウト</a></li>
-                    <li><a href="favorite.php">お気に入り一覧</a></li>
-                <?php }else{ ?>
-                    <li><a href="login.php">ログイン</a></li>
-                    <li><a href="signup.php">サインアップ</a></li>
-                <?php } ?>
                 <li><a href="movieList.php">動画一覧</a></li>
+                <?php if(Auth::check()) { ?>
+                    <li><a href="favorite.php">お気に入り一覧</a></li>
+                    <li><a href="logout.php">ログアウト</a></li>
+                <?php }else{ ?>
+                    <li><a href="signup.php">サインアップ</a></li>
+                    <li><a href="login.php">ログイン</a></li>
+                <?php } ?>
             </ul>
         </nav>
     </div>
