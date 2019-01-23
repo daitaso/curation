@@ -27872,13 +27872,13 @@ _vue2.default.component('thumb-panel', {
       return (0, _moment2.default)(date, 'YYYY/MM/DD HH:mm:S').fromNow();
     }
   },
-  template: '\n                    <a :href="\'movieDetail.php?movie_id=\' + movie_id " class="panel">\n                        <img :src="\'./assets/img/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="panel-title">{{title}}</p>\n                        <span class="panel-fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
+  template: '\n                    <a :href="\'movieDetail.php?movie_id=\' + movie_id " class="p-panel-list__panel">\n                        <img class ="p-panel-list__panel__img" :src="\'./assets/img/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="p-panel-list__panel__title">{{title}}</p>\n                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
 });
 
 //ページネーション
 _vue2.default.component('pagenation', {
   props: ['pages', 'keyword'],
-  template: '\n                    <ul class="pagination-list">\n                        <li class="list-item" v-for="page in pages">\n                            <button class="page-button" v-on:click="$emit(\'page-change\',page,keyword)">{{page}}</button>\n                        </li>\n                    </ul>\n                  '
+  template: '\n                    <ul class="p-pagination__list">\n                        <li class="p-pagination__list__list-item" v-for="page in pages">\n                            <button class="p-pagination__list__list-item__button" v-on:click="$emit(\'page-change\',page,keyword)">{{page}}</button>\n                        </li>\n                    </ul>\n                  '
 });
 
 //タグパネル
@@ -27889,7 +27889,7 @@ _vue2.default.component('tag-panel', {
       eventHub.$emit('tag-change', 1, keyword);
     }
   },
-  template: '\n                    <button class="tag-button" v-on:click="onTagChange(keyword)">{{keyword}}</button>\n                  '
+  template: '\n                    <button class="p-button p-button--tag" v-on:click="onTagChange(keyword)">{{keyword}}</button>\n                  '
 });
 
 //評価入力
@@ -27909,21 +27909,21 @@ _vue2.default.component('review-input', {
       this.star_count = 0;
 
       //押された☆の左側をactiveにする
-      base_attr = base_attr.replace(' active', '');
+      base_attr = base_attr.replace(' p-icn-star--active', '');
       var el = e.currentTarget.previousElementSibling;
       while (el) {
-        el.setAttribute('class', base_attr + ' active');
+        el.setAttribute('class', base_attr + ' p-icn-star--active');
         el = el.previousElementSibling;
         this.star_count++;
       }
       //押された☆をactiveにする
-      e.currentTarget.setAttribute('class', base_attr + ' active');
+      e.currentTarget.setAttribute('class', base_attr + ' p-icn-star--active');
       this.star_count++;
 
       //押された☆の右側を非activeにする
       el = e.currentTarget.nextElementSibling;
       while (el) {
-        el.setAttribute('class', base_attr);
+        el.setAttribute('class', base_attr + ' p-icn-star');
         el = el.nextElementSibling;
       }
     },
@@ -27945,7 +27945,7 @@ _vue2.default.component('review-input', {
       });
     }
   },
-  template: '\n                <div class="root">\n                    <div class="review-star-input">\n                        <i class="fas fa-star icn-star active" @click="onStarChange"></i>\n                        <i class="fas fa-star icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star icn-star " @click="onStarChange"></i>\n                    </div>\n                    <div class="review-text-input">\n                        <textarea @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="\u3069\u3046\u3067\u3057\u305F\u304B\uFF1F"></textarea>\n                        <button @click="onSubmit">\u9001\u4FE1</button>\n                    </div>\n                </div>\n             '
+  template: '\n                <div class="root">\n                    <div class="review-star-input">\n                        <i class="fas fa-star p-icn-star--active" @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                    </div>\n                    <div class="p-review-text-input">\n                        <textarea class="p-review-text-input__textarea" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="\u3069\u3046\u3067\u3057\u305F\u304B\uFF1F"></textarea>\n                        <button class="p-review-text-input__button" @click="onSubmit">\u9001\u4FE1</button>\n                    </div>\n                </div>\n             '
 });
 
 //評価パネルリスト
@@ -27997,7 +27997,7 @@ _vue2.default.component('review-panel', {
       return (0, _moment2.default)(date, 'YYYY/MM/DD HH:mm:S').fromNow();
     }
   },
-  template: '\n                    <div class="review-area">\n                        <ul>\n                            <li v-for="n in this.Review" ><i class="fas fa-star icn-star active"></i></li>\n                            <li v-for="n in this.zeroReview" ><i class="fas fa-star icn-star "></i></li>\n                        </ul>\n                        <p>{{comment.user_name}}<span class="from-now">{{this.fromNow}}</span></p>\n                        <p>{{comment.comment}}</p>\n                    </div>\n                  '
+  template: '\n                    <div class="p-review-area">\n                        <ul class="p-review-area__ul">\n                            <li class="p-review-area__ul__li" v-for="n in this.Review" ><i class="fas fa-star p-icn-star--active"></i></li>\n                            <li class="p-review-area__ul__li" v-for="n in this.zeroReview" ><i class="fas fa-star p-icn-star "></i></li>\n                        </ul>\n                        <p>{{comment.user_name}}<span class="u-from-now">{{this.fromNow}}</span></p>\n                        <p>{{comment.comment}}</p>\n                    </div>\n                  '
 });
 
 new _vue2.default({

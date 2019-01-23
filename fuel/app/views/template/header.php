@@ -16,20 +16,20 @@ if(!empty($errMsg)):
     <?php
 endif;
 ?>
-<header>
-    <div class="site-width">
-        <div class="logo-container">
-            <a href="home.php"><?=Asset::img('logo.png')?></a>
+<header class="l-header">
+    <div class="l-header--width-980">
+        <div class="p-logo-container">
+            <a  href="home.php"><?=Asset::img('logo.png',array('class' => 'p-logo-container__img'))?></a>
         </div>
-        <nav >
-            <ul>
-                <li><a href="movieList.php">動画一覧</a></li>
+        <nav class="p-nav">
+            <ul class="p-nav__ul">
+                <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="movieList.php">動画一覧</a></li>
                 <?php if(Auth::check()) { ?>
-                    <li><a href="favorite.php">お気に入り一覧</a></li>
-                    <li><a href="logout.php">ログアウト</a></li>
+                    <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="favorite.php">お気に入り一覧</a></li>
+                    <li class="p-nav__ul__li p-nav__ul__li--reverse"><a class="p-nav__ul__li--reverse__a" href="logout.php">ログアウト</a></li>
                 <?php }else{ ?>
-                    <li><a href="signup.php">サインアップ</a></li>
-                    <li><a href="login.php">ログイン</a></li>
+                    <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="signup.php">サインアップ</a></li>
+                    <li class="p-nav__ul__li p-nav__ul__li--reverse"><a class="p-nav__ul__li--reverse__a" href="login.php">ログイン</a></li>
                 <?php } ?>
             </ul>
         </nav>

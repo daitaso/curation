@@ -12,7 +12,7 @@ class Controller_Tags extends Controller_Rest{
 
         //GETパラメータ取得
         $sql = '';
-        $result = DB::query('SELECT DISTINCT keyword FROM SEARCH_TAGS ORDER BY keyword ASC', DB::SELECT)->execute();
+        $result = DB::query('SELECT DISTINCT keyword FROM SEARCH_TAGS ORDER BY SEARCH_TAGS.CREATED_AT DESC LIMIT 10', DB::SELECT)->execute();
         return $this->response(array(
             'tag_list' => $result
         ));

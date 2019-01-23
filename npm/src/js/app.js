@@ -25,10 +25,10 @@ Vue.component('thumb-panel', {
     }
     },
     template: `
-                    <a :href="'movieDetail.php?movie_id=' + movie_id " class="panel">
-                        <img :src="'./assets/img/' + movie_id + '.jpg'" :alt="title">
-                        <p class="panel-title">{{title}}</p>
-                        <span class="panel-fromnow">{{this.fromNow}}</span>
+                    <a :href="'movieDetail.php?movie_id=' + movie_id " class="p-panel-list__panel">
+                        <img class ="p-panel-list__panel__img" :src="'./assets/img/' + movie_id + '.jpg'" :alt="title">
+                        <p class="p-panel-list__panel__title">{{title}}</p>
+                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>
                     </a>
                   `
 })
@@ -37,9 +37,9 @@ Vue.component('thumb-panel', {
 Vue.component('pagenation', {
   props:['pages','keyword'],
   template: `
-                    <ul class="pagination-list">
-                        <li class="list-item" v-for="page in pages">
-                            <button class="page-button" v-on:click="$emit('page-change',page,keyword)">{{page}}</button>
+                    <ul class="p-pagination__list">
+                        <li class="p-pagination__list__list-item" v-for="page in pages">
+                            <button class="p-pagination__list__list-item__button" v-on:click="$emit('page-change',page,keyword)">{{page}}</button>
                         </li>
                     </ul>
                   `
@@ -55,7 +55,7 @@ Vue.component('tag-panel', {
   },
   template:
       `
-                    <button class="tag-button" v-on:click="onTagChange(keyword)">{{keyword}}</button>
+                    <button class="p-button p-button--tag" v-on:click="onTagChange(keyword)">{{keyword}}</button>
                   `
 })
 
@@ -76,21 +76,21 @@ Vue.component('review-input', {
       this.star_count = 0
 
       //押された☆の左側をactiveにする
-      base_attr = base_attr.replace(' active','')
+      base_attr = base_attr.replace(' p-icn-star--active','')
       let el = e.currentTarget.previousElementSibling
       while (el) {
-        el.setAttribute('class',base_attr + ' active')
+        el.setAttribute('class',base_attr + ' p-icn-star--active')
         el = el.previousElementSibling;
         this.star_count++
       }
       //押された☆をactiveにする
-      e.currentTarget.setAttribute('class',base_attr + ' active')
+      e.currentTarget.setAttribute('class',base_attr + ' p-icn-star--active')
       this.star_count++
 
       //押された☆の右側を非activeにする
       el = e.currentTarget.nextElementSibling
       while (el) {
-        el.setAttribute('class',base_attr)
+        el.setAttribute('class',base_attr + ' p-icn-star')
         el = el.nextElementSibling
       }
     },
@@ -116,15 +116,15 @@ Vue.component('review-input', {
       `
                 <div class="root">
                     <div class="review-star-input">
-                        <i class="fas fa-star icn-star active" @click="onStarChange"></i>
-                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
-                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
-                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
-                        <i class="fas fa-star icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star p-icn-star--active" @click="onStarChange"></i>
+                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>
+                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>
                     </div>
-                    <div class="review-text-input">
-                        <textarea @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="どうでしたか？"></textarea>
-                        <button @click="onSubmit">送信</button>
+                    <div class="p-review-text-input">
+                        <textarea class="p-review-text-input__textarea" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="どうでしたか？"></textarea>
+                        <button class="p-review-text-input__button" @click="onSubmit">送信</button>
                     </div>
                 </div>
              `
@@ -180,12 +180,12 @@ Vue.component('review-panel', {
     }
   },
   template: `
-                    <div class="review-area">
-                        <ul>
-                            <li v-for="n in this.Review" ><i class="fas fa-star icn-star active"></i></li>
-                            <li v-for="n in this.zeroReview" ><i class="fas fa-star icn-star "></i></li>
+                    <div class="p-review-area">
+                        <ul class="p-review-area__ul">
+                            <li class="p-review-area__ul__li" v-for="n in this.Review" ><i class="fas fa-star p-icn-star--active"></i></li>
+                            <li class="p-review-area__ul__li" v-for="n in this.zeroReview" ><i class="fas fa-star p-icn-star "></i></li>
                         </ul>
-                        <p>{{comment.user_name}}<span class="from-now">{{this.fromNow}}</span></p>
+                        <p>{{comment.user_name}}<span class="u-from-now">{{this.fromNow}}</span></p>
                         <p>{{comment.comment}}</p>
                     </div>
                   `

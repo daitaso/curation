@@ -47,7 +47,7 @@ gulp.task('eslint', function() {
 
 // sassをコンパイル
 gulp.task('sass', function(){
-  gulp.src('src/scss/*.scss')
+  gulp.src('src/css/style.scss')
       .pipe(sass())
       .pipe(gulp.dest('../public/assets/css'));
 });

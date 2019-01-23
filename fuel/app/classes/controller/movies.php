@@ -26,9 +26,9 @@ class Controller_Movies extends Controller_Rest{
         if(is_null($favorite)) {
             //通常検索orタグ検索
             if(!is_null($keyword)){
-                $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN SEARCH_TAGS ON MOVIE_LIST.MOVIE_ID = SEARCH_TAGS.MOVIE_ID WHERE SEARCH_TAGS.KEYWORD = \''.$keyword.'\'';
+                $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN SEARCH_TAGS ON MOVIE_LIST.MOVIE_ID = SEARCH_TAGS.MOVIE_ID WHERE SEARCH_TAGS.KEYWORD = \''.$keyword.'\' ORDER BY MOVIE_LIST.CREATED_AT DESC ';
             }else{
-                $sql = 'SELECT * FROM MOVIE_LIST ';
+                $sql = 'SELECT * FROM MOVIE_LIST ORDER BY MOVIE_LIST.CREATED_AT DESC ';
             }
         }else{
             //お気に入り一覧

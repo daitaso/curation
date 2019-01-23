@@ -1,4 +1,4 @@
-<main class="site-width3">
+<main class="l-site-500">
     <h1>ログイン</h1>
     <?php
         if(!empty($error)):

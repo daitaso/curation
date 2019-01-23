@@ -1,5 +1,5 @@
-<main class="site-width">
-    <div id="sidebar">
+<main class="l-site-980">
+    <div class="l-site-980__sidebar">
         <h1>条件指定</h1>
         <h2>カテゴリー</h2>
         <h2>最近のタグ</h2>
@@ -10,10 +10,10 @@
             ></tag-panel>
         </div>
     </div>
-    <div id="main">
+    <div class="l-site-980__contents">
         <div id="movie_list">
             <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword"></search-result-header>
-            <div class="panel-list">
+            <div class="p-panel-list ">
                 <thumb-panel
                     v-for="movie in info.movie_list"
                     v-bind:movie_id="movie.movie_id"
@@ -21,7 +21,7 @@
                     v-bind:created_at="movie.created_at"
                 ></thumb-panel>
             </div>
-            <div class="pagination">
+            <div class="p-pagination">
                 <pagenation :pages="info.pages" :keyword="info.keyword" v-on:page-change="onPageChange"></pagenation>
             </div>
         </div>

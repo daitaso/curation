@@ -1,15 +1,15 @@
-<section class="site-width2">
+<section class="l-site-640">
 
-    <div class="movie-caption">
+    <div class="p-movie-caption">
         <!-- タイトル  -->
-        <h1><?php echo $title ?></h1>
+        <h1 class="p-movie-caption__h1"><?php echo $title ?></h1>
 
         <!-- お気に入り登録ボタン  -->
-        <i class="fas fa-heart icn-like js-click-like <?php if($isFavorite){ echo 'active'; } ?>" aria-hidden="true" data-movie_id="<?php echo $movie_id ?>" ></i>
+        <i class="fas fa-heart p-movie-caption__i icn-like js-click-like <?php if($isFavorite){ echo 'active'; } ?>" aria-hidden="true" data-movie_id="<?php echo $movie_id ?>" ></i>
     </div>
 
     <!-- 動画再生  -->
-    <div class="movie-container">
+    <div class="p-movie-container">
         <?php echo $embed_tag ?>
     </div>
 

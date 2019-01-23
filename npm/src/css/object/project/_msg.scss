@@ -1,0 +1,25 @@
+/*
+ * メッセージ
+ */
+.err_msg {
+  color: #ff4d4b;
+}
+
+.alert-msg {
+  display: none;
+  line-height: 40px;
+  height: 40px;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+  width: 100%;
+  text-align: center;
+
+  &--sucess{
+    background: #01b3e6;
+  }
+
+  &--err{
+    background: #fe8a8b;
+  }
+}
