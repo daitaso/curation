@@ -69,7 +69,7 @@ class Controller_Extraction extends Controller
 
             $query = DB::insert('movie_list');
             $query->set(array(
-                'site_nm'  => 'tokyomotion',
+                'site_id'  => 'T',
                 'movie_id' => $movie_id,
                 'embed_tag'    => $embed_tag,
                 'title'    => $title,

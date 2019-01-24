@@ -8,9 +8,9 @@ let eventHub = new Vue()
 
 //検索結果ヘッダー
 Vue.component('search-result-header', {
-  props:['start_idx','end_idx','keyword'],
+  props:['start_idx','end_idx','keyword','category'],
   template: `
-                    <h1>検索結果　{{ start_idx + 1 }}　―　{{ end_idx }} キーワード　{{keyword}}</h1>
+                    <h1>検索結果　{{ start_idx + 1 }}　―　{{ end_idx }} キーワード　{{keyword}} カテゴリー {{category}}</h1>
                   `
 })
 
@@ -39,7 +39,7 @@ Vue.component('pagenation', {
   template: `
                     <ul class="p-pagination__list">
                         <li class="p-pagination__list__list-item" v-for="page in pages">
-                            <button class="p-pagination__list__list-item__button" v-on:click="$emit('page-change',page,keyword)">{{page}}</button>
+                            <button class="p-pagination__list__list-item__button" v-on:click="$emit('page-change',page,keyword,null)">{{page}}</button>
                         </li>
                     </ul>
                   `
@@ -50,7 +50,7 @@ Vue.component('tag-panel', {
   props:['keyword'],
   methods: {
     onTagChange: function (keyword) {
-      eventHub.$emit('tag-change',1,keyword)
+      eventHub.$emit('tag-change',1,keyword,null)
     }
   },
   template:
@@ -199,10 +199,13 @@ new Vue({
     }
   },
   methods: {
-    onPageChange: function (page,keyword) {
+    onPageChange: function (page,keyword,category) {
       let url = 'http://localhost/curation/public/movies/list.json?page=' + page
       if(keyword !== null){
         url += '&keyword=' + keyword
+      }
+      if(category !== null){
+        url += '&category=' + category
       }
       axios
           .get(url)
@@ -211,12 +214,15 @@ new Vue({
   },
   created(){
     eventHub.$on('tag-change', this.onPageChange)
+    eventHub.$on('category-change',this.onPageChange)
   },
   beforeDestroy() {
     eventHub.$off('tag-change', this.onPageChange)
+    eventHub.$off('category-change',this.onPageChange)
+
   },
   mounted () {
-    this.onPageChange(1,null)
+    this.onPageChange(1,null,null)
   }
 
 })
@@ -272,6 +278,12 @@ new Vue({
 })
 
 $(function() {
+
+  //カテゴリーが変更されたら
+  $('select').change(function() {
+    var val = $(this).val() || null;
+    eventHub.$emit('category-change',1,null,val)
+  });
 
   var $toggleMsg = $('.js-toggle-msg');
   if($toggleMsg.length){

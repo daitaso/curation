@@ -58,14 +58,14 @@ a:hover {
   /* サイドバー */ }
   .l-site-980__contents {
     float: left;
-    width: 760px; }
+    width: 750px; }
   .l-site-980__sidebar {
     float: left;
     box-sizing: border-box;
     margin-right: 20px;
     padding: 15px;
     min-height: 600px;
-    width: 200px; }
+    width: 210px; }
 
 .l-site-640 {
   width: 640px;
@@ -99,6 +99,56 @@ a:hover {
   .l-header--width-980 {
     width: 980px;
     margin: 0 auto; }
+
+.selectdiv {
+  position: relative;
+  float: left;
+  width: 180px;
+  min-width: 100px; }
+
+select::-ms-expand {
+  display: none; }
+
+.selectdiv:after {
+  content: '<>';
+  font: 14px "Consolas", monospace;
+  color: #990073;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  right: 11px;
+  /*Adjust for position however you want*/
+  top: 18px;
+  padding: 0 0 2px;
+  border-bottom: 1px solid #999;
+  /*left line */
+  position: absolute;
+  pointer-events: none; }
+
+.selectdiv select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: 50px;
+  float: right;
+  margin: 5px 0px;
+  padding: 0px 24px;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.75;
+  color: #990073;
+  background-color: #fff;
+  background-image: none;
+  border: 2px solid #990073;
+  -ms-word-break: normal;
+  word-break: normal; }
+
+#select_list {
+  overflow: hidden; }
 
 /* ボタン */
 .p-button {
@@ -407,3 +457,6 @@ input[type="submit"]:hover {
   right: 0;
   bottom: 0;
   margin: auto; }
+
+.u-mbs {
+  margin-bottom: 20px; }

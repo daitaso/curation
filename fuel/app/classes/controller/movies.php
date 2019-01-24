@@ -16,6 +16,7 @@ class Controller_Movies extends Controller_Rest{
         $keyword  = Input::Get('keyword');
         $page     = Input::Get('page');
         $favorite = Input::Get('favorite');
+        $category = Input::Get('category');
 
         if(is_null($page)){
             $page = 1;  //page指定が無い時は1ページ目とみなす
@@ -24,9 +25,11 @@ class Controller_Movies extends Controller_Rest{
 
         $sql = '';
         if(is_null($favorite)) {
-            //通常検索orタグ検索
+            //通常検索orタグ検索orカテゴリー検索
             if(!is_null($keyword)){
                 $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN SEARCH_TAGS ON MOVIE_LIST.MOVIE_ID = SEARCH_TAGS.MOVIE_ID WHERE SEARCH_TAGS.KEYWORD = \''.$keyword.'\' ORDER BY MOVIE_LIST.CREATED_AT DESC ';
+            }else if(!is_null($category)) {
+                $sql = 'SELECT * FROM MOVIE_LIST WHERE MOVIE_LIST.SITE_ID = \''.$category.'\' ORDER BY MOVIE_LIST.CREATED_AT DESC ';
             }else{
                 $sql = 'SELECT * FROM MOVIE_LIST ORDER BY MOVIE_LIST.CREATED_AT DESC ';
             }
@@ -73,7 +76,8 @@ class Controller_Movies extends Controller_Rest{
             'pages'      => $pages,
             'start_idx'  => $start_idx,
             'end_idx'    => $end_idx,
-            'keyword'    => $keyword
+            'keyword'    => $keyword,
+            'category'   => $category
         ));
     }
 }

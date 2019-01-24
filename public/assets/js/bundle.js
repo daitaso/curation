@@ -27858,8 +27858,8 @@ var eventHub = new _vue2.default();
 
 //検索結果ヘッダー
 _vue2.default.component('search-result-header', {
-  props: ['start_idx', 'end_idx', 'keyword'],
-  template: '\n                    <h1>\u691C\u7D22\u7D50\u679C\u3000{{ start_idx + 1 }}\u3000\u2015\u3000{{ end_idx }} \u30AD\u30FC\u30EF\u30FC\u30C9\u3000{{keyword}}</h1>\n                  '
+  props: ['start_idx', 'end_idx', 'keyword', 'category'],
+  template: '\n                    <h1>\u691C\u7D22\u7D50\u679C\u3000{{ start_idx + 1 }}\u3000\u2015\u3000{{ end_idx }} \u30AD\u30FC\u30EF\u30FC\u30C9\u3000{{keyword}} \u30AB\u30C6\u30B4\u30EA\u30FC {{category}}</h1>\n                  '
 });
 
 //サムネイルパネル
@@ -27878,7 +27878,7 @@ _vue2.default.component('thumb-panel', {
 //ページネーション
 _vue2.default.component('pagenation', {
   props: ['pages', 'keyword'],
-  template: '\n                    <ul class="p-pagination__list">\n                        <li class="p-pagination__list__list-item" v-for="page in pages">\n                            <button class="p-pagination__list__list-item__button" v-on:click="$emit(\'page-change\',page,keyword)">{{page}}</button>\n                        </li>\n                    </ul>\n                  '
+  template: '\n                    <ul class="p-pagination__list">\n                        <li class="p-pagination__list__list-item" v-for="page in pages">\n                            <button class="p-pagination__list__list-item__button" v-on:click="$emit(\'page-change\',page,keyword,null)">{{page}}</button>\n                        </li>\n                    </ul>\n                  '
 });
 
 //タグパネル
@@ -27886,7 +27886,7 @@ _vue2.default.component('tag-panel', {
   props: ['keyword'],
   methods: {
     onTagChange: function onTagChange(keyword) {
-      eventHub.$emit('tag-change', 1, keyword);
+      eventHub.$emit('tag-change', 1, keyword, null);
     }
   },
   template: '\n                    <button class="p-button p-button--tag" v-on:click="onTagChange(keyword)">{{keyword}}</button>\n                  '
@@ -28009,12 +28009,15 @@ new _vue2.default({
   },
 
   methods: {
-    onPageChange: function onPageChange(page, keyword) {
+    onPageChange: function onPageChange(page, keyword, category) {
       var _this3 = this;
 
       var url = 'http://localhost/curation/public/movies/list.json?page=' + page;
       if (keyword !== null) {
         url += '&keyword=' + keyword;
+      }
+      if (category !== null) {
+        url += '&category=' + category;
       }
       _axios2.default.get(url).then(function (response) {
         return _this3.info = response.data;
@@ -28023,12 +28026,14 @@ new _vue2.default({
   },
   created: function created() {
     eventHub.$on('tag-change', this.onPageChange);
+    eventHub.$on('category-change', this.onPageChange);
   },
   beforeDestroy: function beforeDestroy() {
     eventHub.$off('tag-change', this.onPageChange);
+    eventHub.$off('category-change', this.onPageChange);
   },
   mounted: function mounted() {
-    this.onPageChange(1, null);
+    this.onPageChange(1, null, null);
   }
 });
 
@@ -28086,6 +28091,12 @@ new _vue2.default({
 });
 
 (0, _jquery2.default)(function () {
+
+  //カテゴリーが変更されたら
+  (0, _jquery2.default)('select').change(function () {
+    var val = (0, _jquery2.default)(this).val() || null;
+    eventHub.$emit('category-change', 1, null, val);
+  });
 
   var $toggleMsg = (0, _jquery2.default)('.js-toggle-msg');
   if ($toggleMsg.length) {
