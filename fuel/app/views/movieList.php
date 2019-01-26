@@ -35,7 +35,7 @@
                 ></thumb-panel>
             </div>
             <div class="p-pagination">
-                <pagenation :pages="info.pages" :keyword="info.keyword" v-on:page-change="onPageChange"></pagenation>
+                <pagenation :pages="info.pages" :cur_page="info.cur_page" :keyword="info.keyword" v-on:page-change="onPageChange"></pagenation>
             </div>
         </div>
     </div>

@@ -151,20 +151,19 @@ select::-ms-expand {
   overflow: hidden; }
 
 /* ボタン */
-.p-button {
-  /* タグボタン */ }
-  .p-button--tag {
-    margin: 2px;
-    color: #fff;
-    background-color: #990073;
-    border-color: transparent;
-    border-radius: 100px;
-    box-shadow: none;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 6px 16px;
-    text-align: center; }
+.p-tag-button {
+  /* タグボタン */
+  margin: 2px;
+  color: #fff;
+  background-color: #990073;
+  border-color: transparent;
+  border-radius: 100px;
+  box-shadow: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 16px;
+  text-align: center; }
 
 /*
  * お気に入り登録ボタン
@@ -344,6 +343,9 @@ input[type="submit"]:hover {
         border-radius: 3px;
         transition: .4s; }
         .p-pagination__list__list-item__button:hover {
+          background: #990073;
+          color: white; }
+        .p-pagination__list__list-item__button--select {
           background: #990073;
           color: white; }
 

@@ -35,14 +35,26 @@ Vue.component('thumb-panel', {
 
 //ページネーション
 Vue.component('pagenation', {
-  props:['pages','keyword'],
+  props:['pages','keyword','cur_page'],
+  computed: {
+    createPushClass : function () {
+      let cur_page = this.cur_page
+      self = this;
+      return function (page) {
+          if(Number(page) === Number(cur_page)){
+            return 'p-pagination__list__list-item__button--select'
+          }
+          return '';
+      };
+    }
+  },
   template: `
-                    <ul class="p-pagination__list">
-                        <li class="p-pagination__list__list-item" v-for="page in pages">
-                            <button class="p-pagination__list__list-item__button" v-on:click="$emit('page-change',page,keyword,null)">{{page}}</button>
-                        </li>
-                    </ul>
-                  `
+                <ul class="p-pagination__list">
+                    <li class="p-pagination__list__list-item" v-for="page in pages">
+                        <button class="p-pagination__list__list-item__button" v-bind:class="createPushClass(page)" v-on:click="$emit('page-change',page,keyword,null)">{{page}}</button>
+                    </li>
+                </ul>
+             `
 })
 
 //タグパネル
@@ -50,12 +62,16 @@ Vue.component('tag-panel', {
   props:['keyword'],
   methods: {
     onTagChange: function (keyword) {
+
+      if(keyword === '未指定'){
+        keyword = null
+      }
       eventHub.$emit('tag-change',1,keyword,null)
     }
   },
   template:
       `
-                    <button class="p-button p-button--tag" v-on:click="onTagChange(keyword)">{{keyword}}</button>
+                    <button class="p-tag-button " v-on:click="onTagChange(keyword,$event)">{{keyword}}</button>
                   `
 })
 
@@ -307,7 +323,7 @@ $(function() {
       }).done(function( data ){
         console.log('Ajax Success');
         // クラス属性をtoggleでつけ外しする
-        $this.toggleClass('active');
+        $this.toggleClass('p-icn-like--active');
 
       }).fail(function( msg ) {
         console.log('Ajax Error');

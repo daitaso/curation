@@ -74,6 +74,7 @@ class Controller_Movies extends Controller_Rest{
         return $this->response(array(
             'movie_list' => $result,
             'pages'      => $pages,
+            'cur_page'   => $page,
             'start_idx'  => $start_idx,
             'end_idx'    => $end_idx,
             'keyword'    => $keyword,
