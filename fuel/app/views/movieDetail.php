@@ -16,12 +16,13 @@
     <!--  コメント入力  -->
     <h2>コメントを残す</h2>
     <div id="review_input">
-        <review-input :movie_id="<?php echo $movie_id ?>"></review-input>
+        <review-input movie_id="<?php echo $movie_id ?>"></review-input>
+
     </div>
 
     <!--  コメント一覧  -->
     <div id="review_list">
-        <review-panel-list :movie_id="<?php echo $movie_id ?>"></review-panel-list>
+        <review-panel-list movie_id="<?php echo $movie_id ?>"></review-panel-list>
     </div>
 
 </section>
