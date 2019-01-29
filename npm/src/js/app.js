@@ -26,7 +26,7 @@ Vue.component('thumb-panel', {
     },
     template: `
                     <a :href="'movieDetail.php?movie_id=' + movie_id " class="p-panel-list__panel">
-                        <img class ="p-panel-list__panel__img" :src="'./assets/img/' + movie_id + '.jpg'" :alt="title">
+                        <img class ="p-panel-list__panel__img" :src="'./assets/img/thumb/' + movie_id + '.jpg'" :alt="title">
                         <p class="p-panel-list__panel__title">{{title}}</p>
                         <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>
                     </a>
@@ -116,7 +116,7 @@ Vue.component('review-input', {
     //送信ボタンクリック
     onSubmit: function (e) {
 
-      axios.post('http://localhost/curation/public/comments/list.json', {
+      axios.post('http://localhost/curation/public/api/comments/list.json', {
         movie_id: this.movie_id,
         comment:  this.input_text,
         review:   this.star_count
@@ -156,7 +156,7 @@ Vue.component('review-panel-list', {
   },
   methods:{
     onCommentUpdate: function (movie_id) {
-      let url = 'http://localhost/curation/public/comments/list.json?movie_id=' + movie_id
+      let url = 'http://localhost/curation/public/api/comments/list.json?movie_id=' + movie_id
       axios
           .get(url)
           .then(response => (this.info = response.data))
@@ -216,7 +216,7 @@ new Vue({
   },
   methods: {
     onPageChange: function (page,keyword,category) {
-      let url = 'http://localhost/curation/public/movies/list.json?page=' + page
+      let url = 'http://localhost/curation/public/api/movies/list.json?page=' + page
       if(keyword !== null){
         url += '&keyword=' + keyword
       }
@@ -253,7 +253,7 @@ new Vue({
   methods: {
     onPageChange: function (page) {
       axios
-          .get('http://localhost/curation/public/movies/list.json?page=' + page + '&favorite=on')
+          .get('http://localhost/curation/public/api/movies/list.json?page=' + page + '&favorite=on')
           .then(response => (this.info = response.data))
     }
   },
@@ -273,7 +273,7 @@ new Vue({
   },
   mounted () {
     axios
-        .get('http://localhost/curation/public/tags/list.json')
+        .get('http://localhost/curation/public/api/tags/list.json')
         .then(response => (this.info = response.data))
   },
   created(){
@@ -318,7 +318,7 @@ $(function() {
 
       $.ajax({
         type: "POST",
-        url: "ajaxLike.php",
+        url: "api/ajaxLike.php",
         data: { movieId : likeMovieId}
       }).done(function( data ){
         console.log('Ajax Success');

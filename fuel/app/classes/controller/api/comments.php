@@ -5,7 +5,7 @@
  * Date: 2019/01/10
  * Time: 22:56
  */
-class Controller_Comments extends Controller_Rest{
+class Controller_Api_Comments extends Controller_Rest{
 
     public function get_list(){
 

@@ -5,7 +5,7 @@
  * Date: 2019/01/10
  * Time: 22:56
  */
-class Controller_Movies extends Controller_Rest{
+class Controller_Api_Movies extends Controller_Rest{
 
     const PAGE_DATA_NUM                  = 12;     //１ページあたりに表示する、明細データの表示件数
     const PAGENATION_MAX_PAGE_NUM        =  5;     //ページネーションで一度に表示する最大ページリンク数

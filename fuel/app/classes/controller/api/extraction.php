@@ -1,7 +1,7 @@
 <?php
 
 // データ抽出
-class Controller_Extraction extends Controller_Rest
+class Controller_Api_Extraction extends Controller_Rest
 {
     public function get_list(){
 
@@ -53,7 +53,7 @@ class Controller_Extraction extends Controller_Rest
                 'http' => array('ignore_errors' => true)
             ));
             $img = file_get_contents($img_url,false,$context);
-            file_put_contents('./assets/img/' .$movie_id.'.jpg' , $img);
+            file_put_contents('./assets/img/thumb/' .$movie_id.'.jpg' , $img);
 
             //タイトル抽出
             $title = $a->find('img[src^=https://cdn.tokyo-motion.net/media/videos/]',0)->getAttribute('title');
@@ -120,7 +120,7 @@ class Controller_Extraction extends Controller_Rest
             $img_url = $block->find('div.thumb',0)->find('img[data-src^=https://img-]',0)->getAttribute('data-src');
             $img_url = str_replace('THUMBNUM','1',$img_url);
             $img = file_get_contents($img_url);
-            file_put_contents('./assets/img/' .$movie_id.'.jpg' , $img);
+            file_put_contents('./assets/img/thumb/' .$movie_id.'.jpg' , $img);
 
             //詳細ページ取得
             $detail_url = 'https://www.xvideos.com'.$block->find('div.thumb',0)->find('a',0)->getAttribute('href');
@@ -203,7 +203,7 @@ class Controller_Extraction extends Controller_Rest
             $img_url = str_replace('background-image: url(','',$style);
             $img_url = str_replace(');','',$img_url);
             $img = file_get_contents($img_url);
-            file_put_contents('./assets/img/' .$movie_id.'.jpg' , $img);
+            file_put_contents('./assets/img/thumb/' .$movie_id.'.jpg' , $img);
 
             //タイトル
             $title = $block->find('a.c-boxList-111_video_ttl',0)->getAttribute('title');

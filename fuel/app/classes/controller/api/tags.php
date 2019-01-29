@@ -6,7 +6,7 @@
  * Time: 18:07
  */
 
-class Controller_Tags extends Controller_Rest{
+class Controller_Api_Tags extends Controller_Rest{
 
     public function get_list(){
 

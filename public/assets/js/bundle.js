@@ -27872,7 +27872,7 @@ _vue2.default.component('thumb-panel', {
       return (0, _moment2.default)(date, 'YYYY/MM/DD HH:mm:S').fromNow();
     }
   },
-  template: '\n                    <a :href="\'movieDetail.php?movie_id=\' + movie_id " class="p-panel-list__panel">\n                        <img class ="p-panel-list__panel__img" :src="\'./assets/img/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="p-panel-list__panel__title">{{title}}</p>\n                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
+  template: '\n                    <a :href="\'movieDetail.php?movie_id=\' + movie_id " class="p-panel-list__panel">\n                        <img class ="p-panel-list__panel__img" :src="\'./assets/img/thumb/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="p-panel-list__panel__title">{{title}}</p>\n                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
 });
 
 //ページネーション
@@ -27950,7 +27950,7 @@ _vue2.default.component('review-input', {
     onSubmit: function onSubmit(e) {
       var _this = this;
 
-      _axios2.default.post('http://localhost/curation/public/comments/list.json', {
+      _axios2.default.post('http://localhost/curation/public/api/comments/list.json', {
         movie_id: this.movie_id,
         comment: this.input_text,
         review: this.star_count
@@ -27977,7 +27977,7 @@ _vue2.default.component('review-panel-list', {
     onCommentUpdate: function onCommentUpdate(movie_id) {
       var _this2 = this;
 
-      var url = 'http://localhost/curation/public/comments/list.json?movie_id=' + movie_id;
+      var url = 'http://localhost/curation/public/api/comments/list.json?movie_id=' + movie_id;
       _axios2.default.get(url).then(function (response) {
         return _this2.info = response.data;
       });
@@ -28028,7 +28028,7 @@ new _vue2.default({
     onPageChange: function onPageChange(page, keyword, category) {
       var _this3 = this;
 
-      var url = 'http://localhost/curation/public/movies/list.json?page=' + page;
+      var url = 'http://localhost/curation/public/api/movies/list.json?page=' + page;
       if (keyword !== null) {
         url += '&keyword=' + keyword;
       }
@@ -28065,7 +28065,7 @@ new _vue2.default({
     onPageChange: function onPageChange(page) {
       var _this4 = this;
 
-      _axios2.default.get('http://localhost/curation/public/movies/list.json?page=' + page + '&favorite=on').then(function (response) {
+      _axios2.default.get('http://localhost/curation/public/api/movies/list.json?page=' + page + '&favorite=on').then(function (response) {
         return _this4.info = response.data;
       });
     }
@@ -28086,7 +28086,7 @@ new _vue2.default({
   mounted: function mounted() {
     var _this5 = this;
 
-    _axios2.default.get('http://localhost/curation/public/tags/list.json').then(function (response) {
+    _axios2.default.get('http://localhost/curation/public/api/tags/list.json').then(function (response) {
       return _this5.info = response.data;
     });
   },
@@ -28132,7 +28132,7 @@ new _vue2.default({
 
       _jquery2.default.ajax({
         type: "POST",
-        url: "ajaxLike.php",
+        url: "api/ajaxLike.php",
         data: { movieId: likeMovieId }
       }).done(function (data) {
         console.log('Ajax Success');

@@ -6,11 +6,6 @@ import plumber from 'gulp-plumber';
 import eslint from 'gulp-eslint';
 import sass from 'gulp-sass';
 
-// npmで出るエラー、警告集
-// https://qiita.com/M-ISO/items/d693ac892549fc95c14c
-// chromeのreact-dev-toolをインストールしておくといい
-// https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi/related
-
 // gulpタスクの作成
 gulp.task('build', function(){
   gulp.src('src/js/*.js')

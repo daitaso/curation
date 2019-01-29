@@ -3,7 +3,7 @@
 //================================
 // Ajax処理
 //================================
-class Controller_AjaxLike extends Controller{
+class Controller_Api_AjaxLike extends Controller{
     public function action_index(){
 
         if (Input::method() === 'POST' && Auth::check()) {
