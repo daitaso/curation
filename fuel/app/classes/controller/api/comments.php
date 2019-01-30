@@ -12,7 +12,7 @@ class Controller_Api_Comments extends Controller_Rest{
         $movie_id  = Input::Get('movie_id');
 
 //        $limit_offset = 'LIMIT '.self::PAGE_DATA_NUM.' OFFSET '.(($page - 1) * self::PAGE_DATA_NUM);
-        $result = DB::query('SELECT * FROM COMMENT WHERE movie_id = '.'\''.$movie_id.'\''.' ORDER BY CREATED_AT DESC', DB::SELECT)->execute();
+        $result = DB::query('SELECT * FROM COMMENTS WHERE movie_id = '.'\''.$movie_id.'\''.' ORDER BY CREATED_AT DESC', DB::SELECT)->execute();
 
         return $this->response(array(
             'comment_list' => $result

@@ -63,6 +63,10 @@ class Controller_Login extends Controller
         $view->set('footer',View::forge('template/footer'));
         $view->set_global('login', $form->build(''), false);
         $view->set_global('error', $error);
+        $vvv = View::forge('template/script');
+        $vvv->set('jsname','login');
+        $view->set('script',$vvv);
+
 
         // レンダリングした HTML をリクエストに返す
         return $view;

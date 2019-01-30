@@ -74,6 +74,10 @@ class Controller_Signup extends Controller
         $view->set('footer',View::forge('template/footer'));
         $view->set_global('signupform', $form->build(''), false);
         $view->set_global('error', $error);
+        $vvv = View::forge('template/script');
+        $vvv->set('jsname','signup');
+        $view->set('script',$vvv);
+
 
         // レンダリングした HTML をリクエストに返す
         return $view;

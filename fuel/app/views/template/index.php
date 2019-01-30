@@ -6,5 +6,6 @@
 	<?=$header?>
 	<?=$contents?>
 	<?=$footer?>
+    <?=$script?>
 </body>
 </html>

@@ -64,6 +64,10 @@ class Controller_PassReminder extends Controller
         $view->set('footer',View::forge('template/footer'));
         $view->set_global('login', $form->build(''), false);
         $view->set_global('error', $error);
+        $vvv = View::forge('template/script');
+        $vvv->set('jsname','remineder');
+        $view->set('script',$vvv);
+
 
         // レンダリングした HTML をリクエストに返す
         return $view;

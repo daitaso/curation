@@ -11,7 +11,9 @@ class Controller_MovieList extends Controller{
         $vv = View::forge('movieList');
         $view->set('contents',$vv);
         $view->set('footer',View::forge('template/footer'));
-
+        $vvv = View::forge('template/script');
+        $vvv->set('jsname','movielist');
+        $view->set('script',$vvv);
         return $view;
 
     }

@@ -71,7 +71,7 @@ class Controller_Api_Extraction extends Controller_Rest
             //共有タグ
             $embed_tag = $detail_html->find('iframe')[0]->outertext;
 
-            $query = DB::insert('movie_list');
+            $query = DB::insert('movies');
             $query->set(array(
                 'site_id'  => 'T',
                 'movie_id' => $movie_id,
@@ -85,7 +85,7 @@ class Controller_Api_Extraction extends Controller_Rest
             $keywords = $detail_html->find('meta[name=keywords]',0)->getAttribute('content');
             $keywords = explode(',',$keywords);
             foreach ($keywords as $keyword) {
-                $query = DB::insert('search_tags');
+                $query = DB::insert('tags');
                 $query->set(array(
                     'movie_id' => $movie_id,
                     'keyword' => trim(mb_convert_kana($keyword, "s", 'UTF-8')), //全角空白のtrim
@@ -158,7 +158,7 @@ class Controller_Api_Extraction extends Controller_Rest
             Log::info($detail_url);
             Log::info(htmlspecialchars_decode($embed_tag));
 
-            $query = DB::insert('movie_list');
+            $query = DB::insert('movies');
             $query->set(array(
                 'site_id'  => 'X',
                 'movie_id' => $movie_id,
@@ -170,7 +170,7 @@ class Controller_Api_Extraction extends Controller_Rest
 
             //検索タグ抽出
             foreach ($keywords as $keyword) {
-                $query = DB::insert('search_tags');
+                $query = DB::insert('tags');
                 $query->set(array(
                     'movie_id' => $movie_id,
                     'keyword' => trim(mb_convert_kana($keyword->plaintext, "s", 'UTF-8')), //全角空白のtrim
@@ -244,7 +244,7 @@ class Controller_Api_Extraction extends Controller_Rest
                 Log::info($keyword->find('span',0)->plaintext);
             }
 
-            $query = DB::insert('movie_list');
+            $query = DB::insert('movies');
             $query->set(array(
                 'site_id'  => 'F',
                 'movie_id' => $movie_id,
@@ -256,7 +256,7 @@ class Controller_Api_Extraction extends Controller_Rest
 
             //検索タグ抽出
             foreach ($keywords as $keyword) {
-                $query = DB::insert('search_tags');
+                $query = DB::insert('tags');
                 $query->set(array(
                     'movie_id' => $movie_id,
                     'keyword' => trim(mb_convert_kana($keyword->find('span',0)->plaintext, "s", 'UTF-8')), //全角空白のtrim

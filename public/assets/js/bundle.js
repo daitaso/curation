@@ -28132,7 +28132,7 @@ new _vue2.default({
 
       _jquery2.default.ajax({
         type: "POST",
-        url: "api/ajaxLike.php",
+        url: "api/favorites.php",
         data: { movieId: likeMovieId }
       }).done(function (data) {
         console.log('Ajax Success');

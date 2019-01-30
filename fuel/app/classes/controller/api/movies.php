@@ -27,15 +27,15 @@ class Controller_Api_Movies extends Controller_Rest{
         if(is_null($favorite)) {
             //通常検索orタグ検索orカテゴリー検索
             if(!is_null($keyword)){
-                $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN SEARCH_TAGS ON MOVIE_LIST.MOVIE_ID = SEARCH_TAGS.MOVIE_ID WHERE SEARCH_TAGS.KEYWORD = \''.$keyword.'\' ORDER BY MOVIE_LIST.CREATED_AT DESC ';
+                $sql = 'SELECT * FROM MOVIES INNER JOIN TAGS ON MOVIES.MOVIE_ID = TAGS.MOVIE_ID WHERE TAGS.KEYWORD = \''.$keyword.'\' ORDER BY MOVIES.CREATED_AT DESC ';
             }else if(!is_null($category)) {
-                $sql = 'SELECT * FROM MOVIE_LIST WHERE MOVIE_LIST.SITE_ID = \''.$category.'\' ORDER BY MOVIE_LIST.CREATED_AT DESC ';
+                $sql = 'SELECT * FROM MOVIES WHERE MOVIES.SITE_ID = \''.$category.'\' ORDER BY MOVIES.CREATED_AT DESC ';
             }else{
-                $sql = 'SELECT * FROM MOVIE_LIST ORDER BY MOVIE_LIST.CREATED_AT DESC ';
+                $sql = 'SELECT * FROM MOVIES ORDER BY MOVIES.CREATED_AT DESC ';
             }
         }else{
             //お気に入り一覧
-            $sql = 'SELECT * FROM MOVIE_LIST INNER JOIN FAVORITE ON MOVIE_LIST.MOVIE_ID = FAVORITE.MOVIE_ID WHERE FAVORITE.USERNAME = \''.Auth::get_screen_name().'\'' ;
+            $sql = 'SELECT * FROM MOVIES INNER JOIN FAVORITES ON MOVIES.MOVIE_ID = FAVORITES.MOVIE_ID WHERE FAVORITES.USERNAME = \''.Auth::get_screen_name().'\'' ;
         }
         //レコード総件数取得
         $result = DB::query($sql,DB::SELECT)->execute();
