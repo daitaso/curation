@@ -12,7 +12,7 @@ class Controller_MovieList extends Controller{
         $view->set('contents',$vv);
         $view->set('footer',View::forge('template/footer'));
         $vvv = View::forge('template/script');
-        $vvv->set('jsname','movielist');
+        $vvv->set('jsname','movieList');
         $view->set('script',$vvv);
         return $view;
 

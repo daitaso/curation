@@ -1,7 +1,7 @@
 <?php
 
-// ログイン画面
-class Controller_PassReminder extends Controller
+// パスワードリマインダー（送信）
+class Controller_PassRemindSend extends Controller
 {
     const PASS_LENGTH_MIN = 6;
     const PASS_LENGTH_MAX = 20;
@@ -11,29 +11,22 @@ class Controller_PassReminder extends Controller
         $error = '';
         $formData = '';
 
-        $form = Fieldset::forge('loginform');
+        $form = Fieldset::forge('passRemindSend');
 
-        //ログインＩＤ
-        $form->add('username', 'ユーザー名', array('type'=>'text', 'placeholder'=>'ユーザー名'))
+        //Email
+        $form->add('email', 'Ｅメール', array('type'=>'email', 'placeholder'=>'Ｅメール'))
             ->add_rule('required')
             ->add_rule('min_length', 1)
             ->add_rule('max_length', 255);
 
-        //パスワード
-        $form->add('password', 'Password', array('type'=>'password', 'placeholder'=>'パスワード'))
-            ->add_rule('required')
-            ->add_rule('min_length', self::PASS_LENGTH_MIN)
-            ->add_rule('max_length', self::PASS_LENGTH_MAX);
-
         //送信ボタン
-        $form->add('submit', '', array('type'=>'submit', 'value'=>'ログイン'));
+        $form->add('submit', '', array('type'=>'submit', 'value'=>'送信する'));
 
         if (Input::method() === 'POST') {
 
             $val = $form->validation();
             if ($val->run()) {
                 $formData = $val->validated();
-
                 if ($user = Auth::validate_user($formData['username'], $formData['password'])){
                     if(Auth::login($formData['username'], $formData['password'])){
 
@@ -60,12 +53,12 @@ class Controller_PassReminder extends Controller
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $view->set('contents',View::forge('auth/login'));
+        $view->set('contents',View::forge('passRemindSend'));
         $view->set('footer',View::forge('template/footer'));
-        $view->set_global('login', $form->build(''), false);
+        $view->set_global('passRemindSend', $form->build(''), false);
         $view->set_global('error', $error);
         $vvv = View::forge('template/script');
-        $vvv->set('jsname','remineder');
+        $vvv->set('jsname','passRemindSend');
         $view->set('script',$vvv);
 
 

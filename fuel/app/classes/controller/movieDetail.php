@@ -35,7 +35,7 @@ class Controller_MovieDetail extends Controller{
         $view->set('contents',$vv);
         $view->set('footer',View::forge('template/footer'));
         $vvv = View::forge('template/script');
-        $vvv->set('jsname','moviedetail');
+        $vvv->set('jsname','movieDetail');
         $view->set('script',$vvv);
 
 

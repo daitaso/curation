@@ -19,8 +19,8 @@ Vue.component('thumb-panel', {
       moment.locale( 'ja' );
       return moment(date, 'YYYY/MM/DD HH:mm:S').fromNow();
     }
-    },
-    template: `
+  },
+  template: `
                     <a :href="'movieDetail.php?movie_id=' + movie_id " class="p-panel-list__panel">
                         <img class ="p-panel-list__panel__img" :src="'./assets/img/thumb/' + movie_id + '.jpg'" :alt="title">
                         <p class="p-panel-list__panel__title">{{title}}</p>
@@ -37,10 +37,10 @@ Vue.component('pagenation', {
       let cur_page = this.cur_page
       self = this;
       return function (page) {
-          if(Number(page) === Number(cur_page)){
-            return 'p-pagination__list__list-item__button--select'
-          }
-          return '';
+        if(Number(page) === Number(cur_page)){
+          return 'p-pagination__list__list-item__button--select'
+        }
+        return '';
       };
     }
   },
@@ -54,37 +54,22 @@ Vue.component('pagenation', {
 })
 
 new Vue({
-  el: '#movie_list',
+  el: '#favorite_list',
   data () {
     return {
       info: null
     }
   },
   methods: {
-    onPageChange: function (page,keyword,category) {
-      let url = 'http://localhost/curation/public/api/movies/list.json?page=' + page
-      if(keyword !== null){
-        url += '&keyword=' + keyword
-      }
-      if(category !== null){
-        url += '&category=' + category
-      }
+    onPageChange: function (page) {
       axios
-          .get(url)
+          .get('http://localhost/curation/public/api/movies/list.json?page=' + page + '&favorite=on')
           .then(response => (this.info = response.data))
     }
   },
-  created(){
-    eventHub.$on('tag-change', this.onPageChange)
-    eventHub.$on('category-change',this.onPageChange)
-  },
-  beforeDestroy() {
-    eventHub.$off('tag-change', this.onPageChange)
-    eventHub.$off('category-change',this.onPageChange)
-
-  },
   mounted () {
-    this.onPageChange(1,null,null)
+
+    this.onPageChange(1)
   }
 
 })

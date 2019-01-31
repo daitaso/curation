@@ -23,8 +23,8 @@ Vue.component('thumb-panel', {
       moment.locale( 'ja' );
       return moment(date, 'YYYY/MM/DD HH:mm:S').fromNow();
     }
-    },
-    template: `
+  },
+  template: `
                     <a :href="'movieDetail.php?movie_id=' + movie_id " class="p-panel-list__panel">
                         <img class ="p-panel-list__panel__img" :src="'./assets/img/thumb/' + movie_id + '.jpg'" :alt="title">
                         <p class="p-panel-list__panel__title">{{title}}</p>
@@ -41,10 +41,10 @@ Vue.component('pagenation', {
       let cur_page = this.cur_page
       self = this;
       return function (page) {
-          if(Number(page) === Number(cur_page)){
-            return 'p-pagination__list__list-item__button--select'
-          }
-          return '';
+        if(Number(page) === Number(cur_page)){
+          return 'p-pagination__list__list-item__button--select'
+        }
+        return '';
       };
     }
   },
@@ -74,7 +74,6 @@ Vue.component('tag-panel', {
                     <button class="p-tag-button " v-on:click="onTagChange(keyword,$event)">{{keyword}}</button>
                   `
 })
-
 
 new Vue({
   el: '#movie_list',
@@ -113,27 +112,6 @@ new Vue({
 })
 
 new Vue({
-  el: '#favorite_list',
-  data () {
-    return {
-      info: null
-    }
-  },
-  methods: {
-    onPageChange: function (page) {
-      axios
-          .get('http://localhost/curation/public/api/movies/list.json?page=' + page + '&favorite=on')
-          .then(response => (this.info = response.data))
-    }
-  },
-  mounted () {
-
-    this.onPageChange(1)
-  }
-
-})
-
-new Vue({
   el: '#tag_list',
   data () {
     return {
@@ -149,55 +127,12 @@ new Vue({
   }
 })
 
-new Vue({
-  el: '#review_input',
-  data () {
-    return {
-      info: null
-    }
-  }
-})
-
-new Vue({
-  el: '#review_list'
-})
-
 $(function() {
 
   //カテゴリーが変更されたら
-  $('select').change(function() {
+  $('select').change(function () {
     var val = $(this).val() || null;
-    eventHub.$emit('category-change',1,null,val)
+    eventHub.$emit('category-change', 1, null, val)
   });
 
-  var $toggleMsg = $('.js-toggle-msg');
-  if($toggleMsg.length){
-    $toggleMsg.slideDown();
-    setTimeout(function(){ $toggleMsg.slideUp(); },3000);
-  }
-
-  // お気に入り登録・削除
-  var $like,
-      likeMovieId;
-  $like = $('.js-click-like') || null;
-  likeMovieId = $like.data('movie_id') || null;
-  if(likeMovieId !== undefined && likeMovieId !== null){
-    $like.on('click',function(){
-      var $this = $(this);
-
-      $.ajax({
-        type: "POST",
-        url: "api/favorites.php",
-        data: { movieId : likeMovieId}
-      }).done(function( data ){
-        console.log('Ajax Success');
-        // クラス属性をtoggleでつけ外しする
-        $this.toggleClass('p-icn-like--active');
-
-      }).fail(function( msg ) {
-        console.log('Ajax Error');
-      });
-    });
-  }
-
-});
+})

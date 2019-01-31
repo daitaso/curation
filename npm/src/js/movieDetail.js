@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import axios from 'axios';
+import $ from 'jquery';
 import moment from 'moment';
+
+//イベントハブ
+let eventHub = new Vue()
 
 //評価入力
 Vue.component('review-input', {

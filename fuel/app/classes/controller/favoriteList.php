@@ -11,15 +11,12 @@ class Controller_FavoriteList extends Controller{
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $vv = View::forge('favorite');
+        $vv = View::forge('favoriteList');
         $view->set('contents',$vv);
         $view->set('footer',View::forge('template/footer'));
         $vvv = View::forge('template/script');
-        $vvv->set('jsname','favorite');
+        $vvv->set('jsname','favoriteList');
         $view->set('script',$vvv);
-
-
-
 
         // レンダリングした HTML をリクエストに返す
         return $view;

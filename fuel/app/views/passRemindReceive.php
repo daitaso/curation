@@ -1,5 +1,4 @@
 <main class="l-site-500">
-    <h1>ログイン</h1>
     <?php
         if(!empty($error)):
     ?>
@@ -15,6 +14,6 @@
     <?php
         endif;
     ?>
-    <?=$login?>
-    <a href="http://localhost/curation/public/passRemindSend">ログインのユーザーネームまたはパスワードを忘れた</a>
+    <p>ご指定のメールアドレスにお送りした【パスワード再発行認証】メール内にある「認証キー」をご入力下さい。</p>
+    <?=$passRemindReceive?>
 </main>
