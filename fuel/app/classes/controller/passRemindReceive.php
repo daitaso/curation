@@ -8,6 +8,11 @@ class Controller_PassRemindReceive extends Controller
 
     public function action_index()
     {
+        $auth_key = Session::get('auth_key');
+        if ( $auth_key === false ){
+            Response::redirect('passRemindSend');
+        }
+
         $error = '';
         $formData = '';
 
@@ -16,8 +21,8 @@ class Controller_PassRemindReceive extends Controller
         //Email
         $form->add('authkey', '認証キー', array('type'=>'text', 'placeholder'=>'認証キー'))
             ->add_rule('required')
-            ->add_rule('min_length', 1)
-            ->add_rule('max_length', 255);
+            ->add_rule('exact_length', 8);
+//            ->add_rule('valid_string', array('alpha', 'uppercase','lowercase','numeric'));
 
         //送信ボタン
         $form->add('submit', '', array('type'=>'submit', 'value'=>'再発行する'));
@@ -26,24 +31,57 @@ class Controller_PassRemindReceive extends Controller
 
             $val = $form->validation();
             if ($val->run()) {
-                $formData = $val->validated();
-                if ($user = Auth::validate_user($formData['username'], $formData['password'])){
-                    if(Auth::login($formData['username'], $formData['password'])){
 
-                        // リダイレクト
-                        Response::redirect('home');
-                    }else{
-                        // メッセージ格納
-                        Session::set_flash('errMsg','ログインに失敗しました！時間を置いてお試し下さい！');
-                    }
-                }else{
-                   Session::set_flash('errMsg','ログインに失敗しました２！時間を置いてお試し下さい！');
+                //バリデーションＯＫ
+                $formData = $val->validated();
+
+                if(Input::post('token') !== Session::get('auth_key')){
+                    //キー違う
                 }
+                if(time() > Session::get('auth_key_limit')){
+                    //期限切れ
+                }
+
+                $result = DB::select()->from('users')->where('email',Session::get('auth_email') )->execute();
+                $username = $result[0]['username'];
+
+                $new_password = Auth::reset_password($username);
+
+                //メール送信
+                $email = Email::forge();
+                $email->from('e.curation.test@gmail.com');
+                $email->to(Session::get('auth_email'));
+                $email->subject('【パスワード再発行完了】｜E-CURATION');
+                $honbun = <<<EOT
+本メールアドレス宛にパスワードの再発行を致しました。
+下記のURLにて再発行パスワードをご入力頂き、ログインください。
+
+ログインページ：http://localhost/curation/public/login.php
+再発行パスワード：{$new_password}
+※ログイン後、パスワードのご変更をお願い致します
+EOT;
+                $email->body($honbun);
+                try{
+                    $email->send();
+                }catch(\EmailValidationFailedException $e){
+                    // バリデーションが失敗したとき
+                    Log::info('koko');
+                }catch(\EmailSendingFailedException $e){
+                    // ドライバがメールを送信できなかったとき
+                    Log::info('koko2');
+
+                }
+
+                //セッション削除
+                Session::delete('auth_key');
+                Session::delete('auth_email');
+                Session::delete('auth_key_limit');
+
+                Response::redirect('login');
+
             } else {
-                // エラー格納
-                $error = $val->error();
-                // メッセージ格納
-                Session::set_flash('errMsg','バリデーションエラー！');
+                Log::info('koko3');
+
             }
             // フォームにPOSTされた値をセット
             $form->repopulate();
@@ -61,9 +99,19 @@ class Controller_PassRemindReceive extends Controller
         $vvv->set('jsname','passRemindReceive');
         $view->set('script',$vvv);
 
-
         // レンダリングした HTML をリクエストに返す
         return $view;
     }
 }
+
+//認証キー生成
+function makeRandKey($length = 8) {
+    static $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKMNOPQRSTUVWXYZ0123456789';
+    $str = '';
+    for ($i = 0; $i < $length; ++$i) {
+        $str .= $chars[mt_rand(0, 61)];
+    }
+    return $str;
+}
+
 

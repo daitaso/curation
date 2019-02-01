@@ -16,7 +16,7 @@ class Controller_PassRemindSend extends Controller
         //Email
         $form->add('email', 'Ｅメール', array('type'=>'email', 'placeholder'=>'Ｅメール'))
             ->add_rule('required')
-            ->add_rule('min_length', 1)
+            ->add_rule('valid_email')
             ->add_rule('max_length', 255);
 
         //送信ボタン
@@ -26,24 +26,56 @@ class Controller_PassRemindSend extends Controller
 
             $val = $form->validation();
             if ($val->run()) {
-                $formData = $val->validated();
-                if ($user = Auth::validate_user($formData['username'], $formData['password'])){
-                    if(Auth::login($formData['username'], $formData['password'])){
 
-                        // リダイレクト
-                        Response::redirect('home');
-                    }else{
-                        // メッセージ格納
-                        Session::set_flash('errMsg','ログインに失敗しました！時間を置いてお試し下さい！');
+                $formData = $val->validated();
+
+                //Email存在チェック
+                $result = DB::query('SELECT * FROM USERS WHERE email = '.'\''. $formData['email'] . '\'', DB::SELECT)->execute();
+                if (count($result) >= 0) {
+                    //EmailがＤＢに登録済
+
+                    //認証キー生成
+                    $auth_key = makeRandKey();
+
+                    //メール送信
+                    $email = Email::forge();
+                    $email->from('e.curation.test@gmail.com');
+                    $email->to($formData['email']);
+                    $email->subject('【パスワード再発行認証】｜E-CURATION');
+                    $honbun = <<<EOT
+本メールアドレス宛にパスワード再発行のご依頼がありました。
+下記のURLにて認証キーをご入力頂くとパスワードが再発行されます。
+
+パスワード再発行認証キー入力ページ：http://localhost/public/passRemindRecieve.php
+認証キー：{$auth_key}
+※認証キーの有効期限は30分となります
+
+認証キーを再発行されたい場合は下記ページより再度再発行をお願い致します。
+http://localhost/public/passRemindSend.php
+EOT;
+                    $email->body($honbun);
+                    try{
+                        $email->send();
+                    }catch(\EmailValidationFailedException $e){
+
+                        // バリデーションが失敗したとき
+                    }catch(\EmailSendingFailedException $e){
+                        // ドライバがメールを送信できなかったとき
+
                     }
+
+                    //認証に必要な情報をセッションへ保存
+                    Session::set('auth_key', $auth_key);
+                    Session::set('auth_email', $formData['email']);
+                    Session::set('auth_key_limit', time()+(60*30));
+
+                    Response::redirect('passRemindReceive');
+
                 }else{
-                   Session::set_flash('errMsg','ログインに失敗しました２！時間を置いてお試し下さい！');
+                    //存在しないEmail
+
                 }
-            } else {
-                // エラー格納
-                $error = $val->error();
-                // メッセージ格納
-                Session::set_flash('errMsg','バリデーションエラー！');
+
             }
             // フォームにPOSTされた値をセット
             $form->repopulate();
@@ -67,3 +99,12 @@ class Controller_PassRemindSend extends Controller
     }
 }
 
+//認証キー生成
+function makeRandKey($length = 8) {
+    static $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKMNOPQRSTUVWXYZ0123456789';
+    $str = '';
+    for ($i = 0; $i < $length; ++$i) {
+        $str .= $chars[mt_rand(0, 61)];
+    }
+    return $str;
+}
