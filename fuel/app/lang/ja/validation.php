@@ -1,3 +1,4 @@
+<!--FuelPHPのvalidationで使用するエラーメッセージリスト-->
 <?php
 return array(
     'required'      => ':label は必須入力です。',

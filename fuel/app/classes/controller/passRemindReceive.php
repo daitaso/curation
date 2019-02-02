@@ -1,58 +1,73 @@
 <?php
+//
+// パスワードリマインダー画面（受信）（Controller)
+//
+// 役割：パスワードリマインダー画面（受信）のController
+//
+class Controller_PassRemindReceive extends Controller{
 
-// パスワードリマインダー（受信）
-class Controller_PassRemindReceive extends Controller
-{
-    const PASS_LENGTH_MIN = 6;
-    const PASS_LENGTH_MAX = 20;
+    public function action_index(){
 
-    public function action_index()
-    {
+        //パスワードリマインダー送信側からメール送信済みか？
         $auth_key = Session::get('auth_key');
         if ( $auth_key === false ){
+            //未送信なら、送信画面へ遷移
             Response::redirect('passRemindSend');
         }
 
-        $error = '';
-        $formData = '';
+        //入力フォーム設定
+        $form = Fieldset::forge('');
 
-        $form = Fieldset::forge('passRemindReceive');
-
-        //Email
+        //認証キー
         $form->add('authkey', '認証キー', array('type'=>'text', 'placeholder'=>'認証キー'))
             ->add_rule('required')
             ->add_rule('exact_length', 8);
-//            ->add_rule('valid_string', array('alpha', 'uppercase','lowercase','numeric'));
 
         //送信ボタン
         $form->add('submit', '', array('type'=>'submit', 'value'=>'再発行する'));
 
-        if (Input::method() === 'POST') {
+        $error = '';
+        if (Input::method() === 'POST'){
+            //postならば再発行処理
 
             $val = $form->validation();
             if ($val->run()) {
-
                 //バリデーションＯＫ
-                $formData = $val->validated();
 
-                if(Input::post('token') !== Session::get('auth_key')){
-                    //キー違う
+                //認証キーの照合
+                $auth_ok = true;
+                if(Input::post('authkey') !== Session::get('auth_key')){
+                    //違うキーが入力された
+                    Session::set_flash('errMsg','認証に失敗しました！認証キーが正しくありません！');
+                    Session::delete('auth_key');
+                    Session::delete('auth_email');
+                    Session::delete('auth_key_limit');
+                    $auth_ok = false;
+
                 }
                 if(time() > Session::get('auth_key_limit')){
                     //期限切れ
+                    Session::set_flash('errMsg','認証に失敗しました！認証キーの期限が切れています！');
+                    Session::delete('auth_key');
+                    Session::delete('auth_email');
+                    Session::delete('auth_key_limit');
+                    $auth_ok = false;
+
                 }
 
-                $result = DB::select()->from('users')->where('email',Session::get('auth_email') )->execute();
-                $username = $result[0]['username'];
+                if($auth_ok){
+                    //認証ＯＫ
+                    //パスワードリセット
+                    $result = DB::select()->from('users')->where('email',Session::get('auth_email') )->execute();
+                    $username = $result[0]['username'];
+                    $new_password = Auth::reset_password($username);
 
-                $new_password = Auth::reset_password($username);
-
-                //メール送信
-                $email = Email::forge();
-                $email->from('e.curation.test@gmail.com');
-                $email->to(Session::get('auth_email'));
-                $email->subject('【パスワード再発行完了】｜E-CURATION');
-                $honbun = <<<EOT
+                    //新しいパスワードをメールで送信
+                    $email = Email::forge();
+                    $email->from('e.curation.test@gmail.com');
+                    $email->to(Session::get('auth_email'));
+                    $email->subject('【パスワード再発行完了】｜E-CURATION');
+                    $honbun = <<<EOT
 本メールアドレス宛にパスワードの再発行を致しました。
 下記のURLにて再発行パスワードをご入力頂き、ログインください。
 
@@ -60,28 +75,22 @@ class Controller_PassRemindReceive extends Controller
 再発行パスワード：{$new_password}
 ※ログイン後、パスワードのご変更をお願い致します
 EOT;
-                $email->body($honbun);
-                try{
+                    $email->body($honbun);
                     $email->send();
-                }catch(\EmailValidationFailedException $e){
-                    // バリデーションが失敗したとき
-                    Log::info('koko');
-                }catch(\EmailSendingFailedException $e){
-                    // ドライバがメールを送信できなかったとき
-                    Log::info('koko2');
 
+                    //セッション削除
+                    Session::delete('auth_key');
+                    Session::delete('auth_email');
+                    Session::delete('auth_key_limit');
+
+                    Session::set_flash('sucMsg','認証成功！登録メールアドレス宛に新しいパスワードを送付しました！');
+
+                    //ログイン画面へ遷移
+                    Response::redirect('login');
                 }
-
-                //セッション削除
-                Session::delete('auth_key');
-                Session::delete('auth_email');
-                Session::delete('auth_key_limit');
-
-                Response::redirect('login');
-
             } else {
-                Log::info('koko3');
-
+                // バリデーションエラー！画面表示用にエラー内容を格納
+                $error = $val->error();
             }
             // フォームにPOSTされた値をセット
             $form->repopulate();

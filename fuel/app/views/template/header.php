@@ -1,3 +1,7 @@
+<!--共通ヘッダー(view)-->
+<!--役割：全ページ共通のヘッダーのview部品です-->
+
+<!--メッセージ表示領域-->
 <?php
 $sucMsg = Session::get_flash('sucMsg');
 if(!empty($sucMsg)):
@@ -18,9 +22,12 @@ endif;
 ?>
 <header class="l-header">
     <div class="l-header--width-980">
+        <!--ロゴ表示領域-->
         <div class="p-logo-container">
             <a  href="home.php"><?=Asset::img('logo.png',array('class' => 'p-logo-container__img'))?></a>
         </div>
+
+        <!--メニュー表示領域-->
         <nav class="p-nav">
             <ul class="p-nav__ul">
                 <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="movieList.php">動画一覧</a></li>

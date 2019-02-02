@@ -1,61 +1,60 @@
 <?php
+//
+// ログイン画面（Controller)
+//
+// 役割：ログイン画面のController
+//
+class Controller_Login extends Controller{
+    public function action_index(){
 
-// ログイン画面
-class Controller_Login extends Controller
-{
-    const PASS_LENGTH_MIN = 6;
-    const PASS_LENGTH_MAX = 20;
+        // 入力フォーム設定
+        $form = Fieldset::forge('');
 
-    public function action_index()
-    {
-        $error = '';
-
-        $form = Fieldset::forge('loginform');
-
-        //ログインＩＤ
-        $form->add('username', 'ユーザー名', array('type'=>'text', 'placeholder'=>'ユーザー名'))
+        //ユーザー名
+        $form->add('username', 'ユーザー名', array('type'=>'text','placeholder'=>'ユーザー名'))
             ->add_rule('required')
             ->add_rule('min_length', 1)
             ->add_rule('max_length', 255);
 
         //パスワード
-        $form->add('password', 'Password', array('type'=>'password', 'placeholder'=>'パスワード'))
+        $form->add('password', 'Password', array('type'=>'password','placeholder'=>'パスワード'))
             ->add_rule('required')
-            ->add_rule('min_length', self::PASS_LENGTH_MIN)
-            ->add_rule('max_length', self::PASS_LENGTH_MAX);
+            ->add_rule('min_length', 6)
+            ->add_rule('max_length', 20);
 
         //送信ボタン
         $form->add('submit', '', array('type'=>'submit', 'value'=>'ログイン'));
 
+        $error = "";
         if (Input::method() === 'POST') {
+            //POSTならばログイン処理
 
             $val = $form->validation();
             if ($val->run()) {
+                //バリデーション正常終了
                 $formData = $val->validated();
 
-                if ($user = Auth::validate_user($formData['username'], $formData['password'])){
-                    if(Auth::login($formData['username'], $formData['password'])){
+                //ログイン試行
+                if(Auth::login($formData['username'], $formData['password'])){
+                    //ログイン成功！
+                    Session::set_flash('sucMsg','ログインが成功しました！');
 
-                        // リダイレクト
-                        Response::redirect('home');
-                    }else{
-                        // メッセージ格納
-                        Session::set_flash('errMsg','ログインに失敗しました！時間を置いてお試し下さい！');
-                    }
+                    //ホーム画面へ遷移
+                    Response::redirect('home');
                 }else{
-                   Session::set_flash('errMsg','ログインに失敗しました２！時間を置いてお試し下さい！');
+                    // ログイン失敗
+                    Session::set_flash('errMsg','ログインに失敗しました！時間を置いてお試し下さい！');
                 }
             } else {
-                // エラー格納
+                // バリデーションエラー！画面表示用にエラー内容を格納
                 $error = $val->error();
-                // メッセージ格納
-                Session::set_flash('errMsg','バリデーションエラー！');
             }
-            // フォームにPOSTされた値をセット
+
+            // フォームにPOSTされた値を再セット
             $form->repopulate();
         }
 
-        //変数としてビューを割り当てる
+        //view構築
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
@@ -63,12 +62,10 @@ class Controller_Login extends Controller
         $view->set('footer',View::forge('template/footer'));
         $view->set_global('login', $form->build(''), false);
         $view->set_global('error', $error);
-        $vvv = View::forge('template/script');
-        $vvv->set('jsname','login');
-        $view->set('script',$vvv);
+        $child_view = View::forge('template/script');
+        $child_view->set('jsname','login');
+        $view->set('script',$child_view);
 
-
-        // レンダリングした HTML をリクエストに返す
         return $view;
     }
 }

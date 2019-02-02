@@ -1,4 +1,8 @@
+<!--動画一覧画面(view)-->
+<!--役割：動画一覧画面のview-->
 <main class="l-site-980">
+
+    <!--サイドバー-->
     <div class="l-site-980__sidebar">
         <h1 class="u-mbs">条件指定</h1>
         <h2>カテゴリー</h2>
@@ -23,9 +27,15 @@
             ></tag-panel>
         </div>
     </div>
+    <!--メインコンテンツ-->
     <div class="l-site-980__contents">
+
+        <!--動画一覧リスト-->
         <div id="movie_list">
+            <!-- vueコンポーネント（検索結果ヘッダー）       -->
             <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword" :category="info.category"></search-result-header>
+
+            <!-- vueコンポーネント（パネルリスト）       -->
             <div class="p-panel-list ">
                 <thumb-panel
                     v-for="movie in info.movie_list"
@@ -34,6 +44,8 @@
                     v-bind:created_at="movie.created_at"
                 ></thumb-panel>
             </div>
+
+            <!-- vueコンポーネント（ページネーション）       -->
             <div class="p-pagination">
                 <pagenation :pages="info.pages" :cur_page="info.cur_page" :keyword="info.keyword" v-on:page-change="onPageChange"></pagenation>
             </div>

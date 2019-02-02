@@ -1,45 +1,44 @@
 <?php
-
+//
+// 動画詳細画面（Controller)
+//
+// 役割：動画詳細画面のController
+//
 class Controller_MovieDetail extends Controller{
 
     public function action_index(){
-
-        $args = array();
 
         //GETパラメータで動画ＩＤ取得
         $movie_id = Input::Get('movie_id');
 
         //動画リストテーブルから情報を取得
         $result = DB::query('SELECT * FROM MOVIES WHERE movie_id = '.'\''.$movie_id.'\'', DB::SELECT)->execute();
-        $args['embed_tag'] = $result[0]['embed_tag'];
-        $args['title'] = $result[0]['title'];
 
         //お気に入り情報存在チェック
         $isFavorite = false;
         if(Auth::check()){
             $result = DB::query('SELECT * FROM FAVORITES WHERE movie_id = '.'\''.$movie_id.'\''.' AND username = \''.Auth::get_screen_name().'\'', DB::SELECT)->execute();
             if(count($result) === 1){
+                //この動画はお気に入り登録されている
                 $isFavorite = true;
             }
         }
 
-        //変数としてビューを割り当てる
+        //view構築
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $vv = View::forge('movieDetail');
-        $vv->set('embed_tag',$args['embed_tag'],false);
-        $vv->set('title',$args['title']);
-        $vv->set('movie_id',$movie_id);
-        $vv->set('isFavorite',$isFavorite);
-        $view->set('contents',$vv);
+        $child_view = View::forge('movieDetail');
+        $child_view->set('embed_tag',$result[0]['embed_tag'],false);
+        $child_view->set('title',$result[0]['title']);
+        $child_view->set('movie_id',$movie_id);
+        $child_view->set('isFavorite',$isFavorite);
+        $view->set('contents',$child_view);
         $view->set('footer',View::forge('template/footer'));
-        $vvv = View::forge('template/script');
-        $vvv->set('jsname','movieDetail');
-        $view->set('script',$vvv);
+        $child_view = View::forge('template/script');
+        $child_view->set('jsname','movieDetail');
+        $view->set('script',$child_view);
 
-
-        // レンダリングした HTML をリクエストに返す
         return $view;
     }
 

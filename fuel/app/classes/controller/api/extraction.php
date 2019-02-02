@@ -1,11 +1,17 @@
 <?php
-
-// データ抽出
+//
+// 動画サイト情報抽出ＡＰＩ
+//
+// 役割：下記URLのHTMLを解析し、動画情報（動画ＩＤ、サムネ、タイトル、検索タグ、共有タグ）を抽出し、ＤＢに格納する
+//
+// 対象URL
+//   TOKYOMOTION（https://www.tokyomotion.net/videos）
+//       XVIDEOS（https://www.xvideos.com/lang/japanese）
+//           FC2（https://video.fc2.com/a/search/video/free/?category_id=30）
+//
 class Controller_Api_Extraction extends Controller_Rest
 {
     public function get_list(){
-
-        Log::info('startkoko');
 
         set_time_limit(300);    //処理時間が長いためタイムアウト時間を5分延長
 

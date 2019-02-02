@@ -1,22 +1,26 @@
 <?php
-
+//
+// 動画一覧画面（Controller)
+//
+// 役割：動画一覧画面のController
+//
 class Controller_MovieList extends Controller{
 
     public function action_index(){
 
-        //変数としてビューを割り当てる
+        //view構築
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $vv = View::forge('movieList');
-        $view->set('contents',$vv);
+        $child_view = View::forge('movieList');
+        $view->set('contents',$child_view);
         $view->set('footer',View::forge('template/footer'));
-        $vvv = View::forge('template/script');
-        $vvv->set('jsname','movieList');
-        $view->set('script',$vvv);
+        $child_view = View::forge('template/script');
+        $child_view->set('jsname','movieList');
+        $view->set('script',$child_view);
+
         return $view;
 
     }
-
 }
 

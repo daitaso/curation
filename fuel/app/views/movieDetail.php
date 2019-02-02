@@ -1,5 +1,8 @@
+<!--動画詳細画面(view)-->
+<!--役割：動画詳細画面のview-->
 <section class="l-site-640">
 
+    <!-- 動画キャプション    -->
     <div class="p-movie-caption">
         <!-- タイトル  -->
         <h1 class="p-movie-caption__h1"><?php echo $title ?></h1>
@@ -17,7 +20,6 @@
     <h2>コメントを残す</h2>
     <div id="review_input">
         <review-input movie_id="<?php echo $movie_id ?>"></review-input>
-
     </div>
 
     <!--  コメント一覧  -->

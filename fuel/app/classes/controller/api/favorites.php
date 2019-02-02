@@ -1,9 +1,20 @@
 <?php
-
-//================================
-// Ajax処理
-//================================
+//
+// FavoritesテーブルＡＰＩ
+//
+// 役割：DBのお気に入り情報テーブルへのアクセスAPI
+//
 class Controller_Api_Favorites extends Controller{
+
+    //
+    // お気に入り情報のトグル（存在したら削除し、無ければ挿入する）
+    //
+    // パラメータ（POST)
+    // :movie_id 動画ID
+    //
+    // 返却値
+    // なし
+    //
     public function action_index(){
 
         if (Input::method() === 'POST' && Auth::check()) {

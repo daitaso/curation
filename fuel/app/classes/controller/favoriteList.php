@@ -1,24 +1,24 @@
 <?php
-
 //
-// お気に入り一覧
+// お気に入り一覧画面（Controller）
+//
+// 役割：お気に入り一覧画面のController
 //
 class Controller_FavoriteList extends Controller{
 
     public function action_index(){
 
-        //変数としてビューを割り当てる
+        //view構築
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $vv = View::forge('favoriteList');
-        $view->set('contents',$vv);
+        $child_view = View::forge('favoriteList');
+        $view->set('contents',$child_view);
         $view->set('footer',View::forge('template/footer'));
-        $vvv = View::forge('template/script');
-        $vvv->set('jsname','favoriteList');
-        $view->set('script',$vvv);
+        $child_view = View::forge('template/script');
+        $child_view->set('jsname','favoriteList');
+        $view->set('script',$child_view);
 
-        // レンダリングした HTML をリクエストに返す
         return $view;
     }
 }

@@ -1,17 +1,14 @@
 <?php
+//
+// パスワードリマインダー画面（送信）（Controller)
+//
+// 役割：パスワードリマインダー画面（送信）のController
+//
+class Controller_PassRemindSend extends Controller{
+    public function action_index(){
 
-// パスワードリマインダー（送信）
-class Controller_PassRemindSend extends Controller
-{
-    const PASS_LENGTH_MIN = 6;
-    const PASS_LENGTH_MAX = 20;
-
-    public function action_index()
-    {
-        $error = '';
-        $formData = '';
-
-        $form = Fieldset::forge('passRemindSend');
+        // 入力フォーム設定
+        $form = Fieldset::forge('');
 
         //Email
         $form->add('email', 'Ｅメール', array('type'=>'email', 'placeholder'=>'Ｅメール'))
@@ -22,16 +19,18 @@ class Controller_PassRemindSend extends Controller
         //送信ボタン
         $form->add('submit', '', array('type'=>'submit', 'value'=>'送信する'));
 
+        $error = '';
         if (Input::method() === 'POST') {
+            //POSTならば送信ボタン処理
 
             $val = $form->validation();
             if ($val->run()) {
-
+                //バリデーション正常終了
                 $formData = $val->validated();
 
                 //Email存在チェック
                 $result = DB::query('SELECT * FROM USERS WHERE email = '.'\''. $formData['email'] . '\'', DB::SELECT)->execute();
-                if (count($result) >= 0) {
+                if (count($result) === 1) {
                     //EmailがＤＢに登録済
 
                     //認証キー生成
@@ -54,34 +53,32 @@ class Controller_PassRemindSend extends Controller
 http://localhost/public/passRemindSend.php
 EOT;
                     $email->body($honbun);
-                    try{
-                        $email->send();
-                    }catch(\EmailValidationFailedException $e){
-
-                        // バリデーションが失敗したとき
-                    }catch(\EmailSendingFailedException $e){
-                        // ドライバがメールを送信できなかったとき
-
-                    }
+                    $email->send();
 
                     //認証に必要な情報をセッションへ保存
                     Session::set('auth_key', $auth_key);
                     Session::set('auth_email', $formData['email']);
                     Session::set('auth_key_limit', time()+(60*30));
 
+                    Session::set_flash('sucMsg','登録メールアドレス宛に再発行のご案内メールを送付しました！');
+
+                    //パスワードリマインダー（受信）画面へ遷移
                     Response::redirect('passRemindReceive');
 
                 }else{
-                    //存在しないEmail
-
+                    //DBに存在しないEmail
+                    Session::set_flash('errMsg','認証に失敗しました！ユーザー登録されていないメールアドレスです！');
                 }
-
+            }else{
+                // バリデーションエラー！画面表示用にエラー内容を格納
+                $error = $val->error();
             }
-            // フォームにPOSTされた値をセット
+
+            // フォームにPOSTされた値を再セット
             $form->repopulate();
         }
 
-        //変数としてビューを割り当てる
+        //view構築
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
@@ -89,17 +86,18 @@ EOT;
         $view->set('footer',View::forge('template/footer'));
         $view->set_global('passRemindSend', $form->build(''), false);
         $view->set_global('error', $error);
-        $vvv = View::forge('template/script');
-        $vvv->set('jsname','passRemindSend');
-        $view->set('script',$vvv);
+        $child_view = View::forge('template/script');
+        $child_view->set('jsname','passRemindSend');
+        $view->set('script',$child_view);
 
-
-        // レンダリングした HTML をリクエストに返す
         return $view;
     }
 }
-
+//
 //認証キー生成
+//
+//役割：ユーザー認証用のキーを生成する。
+//
 function makeRandKey($length = 8) {
     static $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKMNOPQRSTUVWXYZ0123456789';
     $str = '';
