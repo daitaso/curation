@@ -18,18 +18,15 @@ class Controller_Api_Extraction extends Controller_Rest
         //TOKYO MOTION
         $url = 'https://www.tokyomotion.net/videos';
 
-        $option = [
-            CURLOPT_RETURNTRANSFER => true, //文字列として返す
-            CURLOPT_TIMEOUT        => 10, // タイムアウト時間
-        ];
-
         $ch = curl_init($url);
-        curl_setopt_array($ch, $option);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch,CURLOPT_TIMEOUT,10);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
 
         $html    = curl_exec($ch);
         curl_close($ch);
 
+        //スクレイピングライブラリ読み込み
         require APPPATH.'vendor/simple_html_dom.php';
 
         $html = str_get_html($html);
@@ -37,11 +34,7 @@ class Controller_Api_Extraction extends Controller_Rest
         //詳細ページへのa要素のリストを取得
         $as = $html->find('a[href^=/video/]');
 
-        $cnt = 0;
-
         foreach( $as as $a ){
-
-            $cnt ++;
 
             //詳細ページへのURLを解析
             $detail_url = $a->getAttribute('href');
@@ -66,7 +59,8 @@ class Controller_Api_Extraction extends Controller_Rest
 
             //詳細ページ取得
             $ch = curl_init('https://www.tokyomotion.net'.$detail_url);
-            curl_setopt_array($ch, $option);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            curl_setopt($ch,CURLOPT_TIMEOUT,10);
             curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
 
             $detail_html = curl_exec($ch);
@@ -77,27 +71,31 @@ class Controller_Api_Extraction extends Controller_Rest
             //共有タグ
             $embed_tag = $detail_html->find('iframe')[0]->outertext;
 
-            $query = DB::insert('movies');
-            $query->set(array(
-                'site_id'  => 'T',
-                'movie_id' => $movie_id,
-                'embed_tag'    => $embed_tag,
-                'title'    => $title,
-                'created_at' => date('Y-m-d H:i:s'),));
-            $query->execute();
-            $query->reset();
-
-            //検索タグ抽出
-            $keywords = $detail_html->find('meta[name=keywords]',0)->getAttribute('content');
-            $keywords = explode(',',$keywords);
-            foreach ($keywords as $keyword) {
-                $query = DB::insert('tags');
+            try{
+                $query = DB::insert('movies');
                 $query->set(array(
+                    'site_id'  => 'TOKYOMOTION',
                     'movie_id' => $movie_id,
-                    'keyword' => trim(mb_convert_kana($keyword, "s", 'UTF-8')), //全角空白のtrim
+                    'embed_tag'    => $embed_tag,
+                    'title'    => $title,
                     'created_at' => date('Y-m-d H:i:s'),));
                 $query->execute();
                 $query->reset();
+
+                //検索タグ抽出
+                $keywords = $detail_html->find('meta[name=keywords]',0)->getAttribute('content');
+                $keywords = explode(',',$keywords);
+                foreach ($keywords as $keyword) {
+                    $query = DB::insert('tags');
+                    $query->set(array(
+                        'movie_id' => $movie_id,
+                        'keyword' => trim(mb_convert_kana($keyword, "s", 'UTF-8')), //全角空白のtrim
+                        'created_at' => date('Y-m-d H:i:s'),));
+                    $query->execute();
+                    $query->reset();
+                }
+            }catch (Exception $e){
+                Log::info('ExtractionAPI TOKYOMOTION Excepiton');
             }
         }
 
@@ -105,7 +103,8 @@ class Controller_Api_Extraction extends Controller_Rest
         $url = 'https://www.xvideos.com/lang/japanese';
 
         $ch = curl_init($url);
-        curl_setopt_array($ch, $option);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch,CURLOPT_TIMEOUT,10);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
         $html = curl_exec($ch);
         curl_close($ch);
@@ -132,7 +131,8 @@ class Controller_Api_Extraction extends Controller_Rest
             $detail_url = 'https://www.xvideos.com'.$block->find('div.thumb',0)->find('a',0)->getAttribute('href');
 
             $ch = curl_init($detail_url);
-            curl_setopt_array($ch, $option);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            curl_setopt($ch,CURLOPT_TIMEOUT,10);
             curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
@@ -158,40 +158,39 @@ class Controller_Api_Extraction extends Controller_Rest
             foreach($keywords as $keyword){
                 Log::info($keyword->plaintext);
             }
-            Log::info($movie_id);
-            Log::info($title);
-            Log::info($img_url);
-            Log::info($detail_url);
-            Log::info(htmlspecialchars_decode($embed_tag));
 
-            $query = DB::insert('movies');
-            $query->set(array(
-                'site_id'  => 'X',
-                'movie_id' => $movie_id,
-                'embed_tag'    => $embed_tag,
-                'title'    => $title,
-                'created_at' => date('Y-m-d H:i:s'),));
-            $query->execute();
-            $query->reset();
-
-            //検索タグ抽出
-            foreach ($keywords as $keyword) {
-                $query = DB::insert('tags');
+            try{
+                $query = DB::insert('movies');
                 $query->set(array(
+                    'site_id'  => 'XVIDEOS',
                     'movie_id' => $movie_id,
-                    'keyword' => trim(mb_convert_kana($keyword->plaintext, "s", 'UTF-8')), //全角空白のtrim
+                    'embed_tag'    => $embed_tag,
+                    'title'    => $title,
                     'created_at' => date('Y-m-d H:i:s'),));
                 $query->execute();
                 $query->reset();
-            }
 
+                //検索タグ抽出
+                foreach ($keywords as $keyword) {
+                    $query = DB::insert('tags');
+                    $query->set(array(
+                        'movie_id' => $movie_id,
+                        'keyword' => trim(mb_convert_kana($keyword->plaintext, "s", 'UTF-8')), //全角空白のtrim
+                        'created_at' => date('Y-m-d H:i:s'),));
+                    $query->execute();
+                    $query->reset();
+                }
+            }catch (Exception $e){
+                Log::info('ExtractionAPI XVIDEOS Excepiton');
+            }
         }
 
         //FC2
         $url = 'https://video.fc2.com/a/search/video/free/?category_id=30';
 
         $ch = curl_init($url);
-        curl_setopt_array($ch, $option);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch,CURLOPT_TIMEOUT,10);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
         $html = curl_exec($ch);
         curl_close($ch);
@@ -218,13 +217,9 @@ class Controller_Api_Extraction extends Controller_Rest
             //詳細ページ取得
             $detail_url = $block->find('a.c-boxList-111_video_ttl',0)->getAttribute('href');
 
-            Log::info($movie_id);
-            Log::info($title);
-            Log::info($img_url);
-            Log::info($detail_url);
-
             $ch = curl_init($detail_url);
-            curl_setopt_array($ch, $option);
+            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+            curl_setopt($ch,CURLOPT_TIMEOUT,10);
             curl_setopt($ch,CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
@@ -237,40 +232,38 @@ class Controller_Api_Extraction extends Controller_Rest
             //共有タグ
             $embed_tag = $detail_html->find('textarea.cont_v2_info_share030103',0);
             if($embed_tag === null){
-                Log::info('skip');
                 continue;
             }
 
             $embed_tag = htmlspecialchars_decode($embed_tag->plaintext);
-            Log::info($embed_tag);
 
             //検索タグ抽出
             $keywords = $detail_html->find('li.tag_lock');
-            foreach($keywords as $keyword){
-                Log::info($keyword->find('span',0)->plaintext);
-            }
 
-            $query = DB::insert('movies');
-            $query->set(array(
-                'site_id'  => 'F',
-                'movie_id' => $movie_id,
-                'embed_tag'    => $embed_tag,
-                'title'    => $title,
-                'created_at' => date('Y-m-d H:i:s'),));
-            $query->execute();
-            $query->reset();
-
-            //検索タグ抽出
-            foreach ($keywords as $keyword) {
-                $query = DB::insert('tags');
+            try{
+                $query = DB::insert('movies');
                 $query->set(array(
+                    'site_id'  => 'FC2',
                     'movie_id' => $movie_id,
-                    'keyword' => trim(mb_convert_kana($keyword->find('span',0)->plaintext, "s", 'UTF-8')), //全角空白のtrim
+                    'embed_tag'    => $embed_tag,
+                    'title'    => $title,
                     'created_at' => date('Y-m-d H:i:s'),));
                 $query->execute();
                 $query->reset();
-            }
 
+                //検索タグ抽出
+                foreach ($keywords as $keyword) {
+                    $query = DB::insert('tags');
+                    $query->set(array(
+                        'movie_id' => $movie_id,
+                        'keyword' => trim(mb_convert_kana($keyword->find('span',0)->plaintext, "s", 'UTF-8')), //全角空白のtrim
+                        'created_at' => date('Y-m-d H:i:s'),));
+                    $query->execute();
+                    $query->reset();
+                }
+            }catch (Exception $e){
+                Log::info('ExtractionAPI FC2 Excepiton');
+            }
         }
 
         return ;

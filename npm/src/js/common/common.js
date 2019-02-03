@@ -1,35 +1,16 @@
 import $ from "jquery";
-
+//
+// 共通ＪＳ
+//
+// 役割：全てのページで読み込むＪＳ
+//
 $(function() {
 
+  //画面上部に表示するメッセージ用
   var $toggleMsg = $('.js-toggle-msg');
   if($toggleMsg.length){
     $toggleMsg.slideDown();
     setTimeout(function(){ $toggleMsg.slideUp(); },3000);
-  }
-
-  // お気に入り登録・削除
-  var $like,
-      likeMovieId;
-  $like = $('.js-click-like') || null;
-  likeMovieId = $like.data('movie_id') || null;
-  if(likeMovieId !== undefined && likeMovieId !== null) {
-    $like.on('click', function () {
-      var $this = $(this);
-
-      $.ajax({
-        type: "POST",
-        url: "api/favorites.php",
-        data: {movieId: likeMovieId}
-      }).done(function (data) {
-        console.log('Ajax Success');
-        // クラス属性をtoggleでつけ外しする
-        $this.toggleClass('p-icn-like--active');
-
-      }).fail(function (msg) {
-        console.log('Ajax Error');
-      });
-    });
   }
 
   // フッターを最下部に固定

@@ -3,10 +3,18 @@ import axios from 'axios';
 import $ from 'jquery';
 import moment from 'moment';
 
+//
+// 動画詳細画面ＪＳ
+//
+// 役割：動画詳細画面のＪＳ
+//
+
 //イベントハブ
 let eventHub = new Vue()
 
-//評価入力
+//
+// コメント、５段階評価の入力（vueコンポーネント）
+//
 Vue.component('review-input', {
   props:['movie_id'],
   data:  ()=> {
@@ -16,7 +24,9 @@ Vue.component('review-input', {
     }
   },
   methods:{
-    //星がクリックされた
+    //
+    // 星がクリックされると、評価の数を変更される
+    //
     onStarChange: function (e) {
 
       let base_attr = e.currentTarget.getAttribute('class')
@@ -52,6 +62,8 @@ Vue.component('review-input', {
         comment:  this.input_text,
         review:   this.star_count
       }).then(response => {
+
+        //送信したコメントを即座に表示されるよう、review-panel-listに通知する
         eventHub.$emit('comment-update',this.movie_id)
       }).catch(error => {
         console.log(error);
@@ -77,12 +89,16 @@ Vue.component('review-input', {
              `
 })
 
+//
+// コメント、５段階評価の表示リスト（vueコンポーネント）
+//
 //評価パネルリスト
 Vue.component('review-panel-list', {
   props:['movie_id'],
   data () {
     return {
-      info: null
+      info: null,
+      flg:false
     }
   },
   methods:{
@@ -90,8 +106,10 @@ Vue.component('review-panel-list', {
       let url = 'http://localhost/curation/public/api/comments/list.json?movie_id=' + movie_id
       axios
           .get(url)
-          .then(response => (this.info = response.data))
-      console.log(this.info)
+          .then(response => {
+            this.info = response.data
+            this.flg  = true
+          })
     }
   },
   created(){
@@ -104,13 +122,15 @@ Vue.component('review-panel-list', {
     this.onCommentUpdate(this.movie_id)
   },
   template: `
-                    <div>
+                    <div v-if="flg">
                         <review-panel v-for="comment in info.comment_list" :comment="comment"></review-panel>
                     </div>
                   `
 })
 
-//評価パネル
+//
+// コメント、５段階評価の表示パネル（review-panel-listの子コンポーネント）
+//
 Vue.component('review-panel', {
   props:['comment'],
   computed: {
@@ -138,6 +158,9 @@ Vue.component('review-panel', {
                   `
 })
 
+//
+// ルートvueインスタンス（コメント５段階評価、入力側）
+//
 new Vue({
   el: '#review_input',
   data () {
@@ -147,7 +170,37 @@ new Vue({
   }
 })
 
+//
+// ルートvueインスタンス（コメント５段階評価、表示側）
+//
 new Vue({
   el: '#review_list'
 })
 
+$(function() {
+
+  // お気に入り登録・削除
+  var $like,
+      likeMovieId;
+  $like = $('.js-click-like') || null;
+  likeMovieId = $like.data('movie_id') || null;
+  if (likeMovieId !== undefined && likeMovieId !== null) {
+    $like.on('click', function () {
+      var $this = $(this);
+
+      $.ajax({
+        type: "POST",
+        url: "api/favorites.php",
+        data: {movieId: likeMovieId}
+      }).done(function (data) {
+        console.log('Ajax Success');
+        // クラス属性をtoggleでつけ外しする
+        $this.toggleClass('p-icn-like--active');
+
+      }).fail(function (msg) {
+        console.log('Ajax Error');
+      });
+    });
+  }
+
+})

@@ -17,8 +17,8 @@ class Controller_MovieDetail extends Controller{
         //お気に入り情報存在チェック
         $isFavorite = false;
         if(Auth::check()){
-            $result = DB::query('SELECT * FROM FAVORITES WHERE movie_id = '.'\''.$movie_id.'\''.' AND username = \''.Auth::get_screen_name().'\'', DB::SELECT)->execute();
-            if(count($result) === 1){
+            $result2 = DB::query('SELECT * FROM FAVORITES WHERE movie_id = '.'\''.$movie_id.'\''.' AND username = \''.Auth::get_screen_name().'\'', DB::SELECT)->execute();
+            if(count($result2) === 1){
                 //この動画はお気に入り登録されている
                 $isFavorite = true;
             }

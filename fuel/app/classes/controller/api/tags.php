@@ -12,7 +12,11 @@ class Controller_Api_Tags extends Controller_Rest{
     //
     public function get_list(){
 
-        $result = DB::query('SELECT DISTINCT keyword FROM TAGS ORDER BY TAGS.CREATED_AT DESC LIMIT 10', DB::SELECT)->execute();
+        try {
+            $result = DB::query('SELECT DISTINCT keyword FROM TAGS ORDER BY TAGS.CREATED_AT DESC LIMIT 10', DB::SELECT)->execute();
+        }catch(Exception $e ){
+            Log::info('TagsAPI get_list Excepiton');
+        }
         return $this->response(array(
             'tag_list' => $result
         ));

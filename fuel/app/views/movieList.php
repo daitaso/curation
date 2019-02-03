@@ -1,29 +1,29 @@
 <!--動画一覧画面(view)-->
 <!--役割：動画一覧画面のview-->
-<main class="l-site-980">
+<div class="l-site-980">
 
     <!--サイドバー-->
     <div class="l-site-980__sidebar">
         <h1 class="u-mbs">条件指定</h1>
         <h2>カテゴリー</h2>
-        <div id="select_list" class="u-mbs">
-            <div class="selectdiv">
+        <div class="p-select_list" class="u-mbs">
+            <div class="p-select_list__selectdiv">
                 <label>
-                    <select>
+                    <select class="p-select_list__selectdiv__select">
                         <option value="" selected>全て</option>
-                        <option value="X">XVIDEOS</option>
-                        <option value="F">FC2</option>
-                        <option value="T">TOKYOMOTION</option>
+                        <option value="XVIDEOS">XVIDEOS</option>
+                        <option value="FC2">FC2</option>
+                        <option value="TOKYOMOTION">TOKYOMOTION</option>
                     </select>
                 </label>
             </div>
         </div>
 
         <h2>最近のタグ</h2>
-        <div id="tag_list">
+        <div id="tag_list" v-if="flg">
             <tag-panel
-                    v-for="tag in info.tag_list"
-                    v-bind:keyword="tag.keyword"
+                v-for="tag in info.tag_list"
+                v-bind:keyword="tag.keyword"
             ></tag-panel>
         </div>
     </div>
@@ -31,9 +31,9 @@
     <div class="l-site-980__contents">
 
         <!--動画一覧リスト-->
-        <div id="movie_list">
+        <div id="movie_list" v-if="flg">
             <!-- vueコンポーネント（検索結果ヘッダー）       -->
-            <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword" :category="info.category"></search-result-header>
+            <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword" :category="info.category" :show_keyword="info.show_keyword" :show_category="info.show_category"></search-result-header>
 
             <!-- vueコンポーネント（パネルリスト）       -->
             <div class="p-panel-list ">
@@ -47,8 +47,8 @@
 
             <!-- vueコンポーネント（ページネーション）       -->
             <div class="p-pagination">
-                <pagenation :pages="info.pages" :cur_page="info.cur_page" :keyword="info.keyword" v-on:page-change="onPageChange"></pagenation>
+                <pagenation :pages="info.pages" :cur_page="info.cur_page" :keyword="info.keyword" :category="info.category" v-on:page-change="onPageChange"></pagenation>
             </div>
         </div>
     </div>
-</main>
+</div>

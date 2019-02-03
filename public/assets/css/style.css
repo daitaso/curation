@@ -48,6 +48,53 @@ h2 {
 a:hover {
   text-decoration: none; }
 
+form {
+  overflow: hidden; }
+
+form > table {
+  width: 100%; }
+
+form > table tr > td:first-child {
+  width: 40%; }
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #f5f4f3 inset; }
+
+input[type="text"], input[type="password"], input[type="email"] {
+  background: #f5f4f3;
+  border: none;
+  width: 100%; }
+
+textarea {
+  background: #f5f4f3;
+  border: none;
+  width: 100%; }
+
+input[type="text"], input[type="password"], input[type="email"] {
+  color: #545454;
+  height: 60px;
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 16px;
+  display: block;
+  margin-bottom: 10px;
+  box-sizing: border-box; }
+
+input[type="submit"] {
+  border: none;
+  padding: 15px 30px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  background: #3d3938;
+  color: white;
+  float: right;
+  width: 150px;
+  font-size: 1em; }
+
+input[type="submit"]:hover {
+  background: #111;
+  cursor: pointer; }
+
 /*
  * サイト
  */
@@ -96,63 +143,56 @@ a:hover {
   background: #fff;
   border-bottom: 1px solid #990073;
   overflow: hidden; }
-  .l-header--width-980 {
+  .l-header__width-980 {
     width: 980px;
     margin: 0 auto; }
 
-.selectdiv {
-  position: relative;
-  float: left;
-  width: 180px;
-  min-width: 100px; }
-
-select::-ms-expand {
-  display: none; }
-
-.selectdiv:after {
-  content: '<>';
-  font: 14px "Consolas", monospace;
-  color: #990073;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  transform: rotate(90deg);
-  right: 11px;
-  /*Adjust for position however you want*/
-  top: 18px;
-  padding: 0 0 2px;
-  border-bottom: 1px solid #999;
-  /*left line */
-  position: absolute;
-  pointer-events: none; }
-
-.selectdiv select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  display: block;
-  width: 100%;
-  max-width: 320px;
-  height: 50px;
-  float: right;
-  margin: 5px 0px;
-  padding: 0px 24px;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 1.75;
-  color: #990073;
-  background-color: #fff;
-  background-image: none;
-  border: 2px solid #990073;
-  -ms-word-break: normal;
-  word-break: normal; }
-
-#select_list {
+.p-select_list {
   overflow: hidden; }
+  .p-select_list__selectdiv {
+    position: relative;
+    float: left;
+    width: 180px;
+    min-width: 100px; }
+    .p-select_list__selectdiv__select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      height: 50px;
+      float: right;
+      margin: 5px 0px;
+      padding: 0px 24px;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 1.75;
+      color: #990073;
+      background-color: #fff;
+      background-image: none;
+      border: 2px solid #990073;
+      -ms-word-break: normal;
+      word-break: normal; }
+    .p-select_list__selectdiv:after {
+      content: '<>';
+      font: 14px "Consolas", monospace;
+      color: #990073;
+      -webkit-transform: rotate(90deg);
+      -moz-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+      transform: rotate(90deg);
+      right: 11px;
+      /*Adjust for position however you want*/
+      top: 18px;
+      padding: 0 0 2px;
+      border-bottom: 1px solid #999;
+      /*left line */
+      position: absolute;
+      pointer-events: none; }
 
-/* ボタン */
+/*タグボタン*/
 .p-tag-button {
-  /* タグボタン */
   margin: 2px;
   color: #fff;
   background-color: #990073;
@@ -183,63 +223,13 @@ select::-ms-expand {
   100% {
     transform: scale(1); } }
 
-/*form*/
-form {
-  overflow: hidden; }
-
-form > table {
-  width: 100%; }
-
-form > table tr > td:first-child {
-  width: 40%; }
-
-.area-error-msg {
-  color: lightcoral; }
-
-input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0px 1000px #f5f4f3 inset; }
-
-input[type="text"], input[type="password"], input[type="email"] {
-  background: #f5f4f3;
-  border: none;
-  width: 100%; }
-
-textarea {
-  background: #f5f4f3;
-  border: none;
-  width: 100%; }
-
-input[type="text"], input[type="password"], input[type="email"] {
-  color: #545454;
-  height: 60px;
-  width: 100%;
-  padding: 5px 10px;
-  font-size: 16px;
-  display: block;
-  margin-bottom: 10px;
-  box-sizing: border-box; }
-
-input[type="submit"] {
-  border: none;
-  padding: 15px 30px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  background: #3d3938;
-  color: white;
-  float: right;
-  width: 150px;
-  font-size: 1em; }
-
-input[type="submit"]:hover {
-  background: #111;
-  cursor: pointer; }
-
 /*
  * ロゴ
  */
 .p-logo-container {
   float: left;
   margin: 0;
+  width: 650px;
   height: 100%;
   position: relative; }
   .p-logo-container__img {
@@ -296,13 +286,11 @@ input[type="submit"]:hover {
     margin-top: 25px; }
 
 /*
- * メッセージ
+ * アラートメッセージ
  */
-.err_msg {
-  color: #ff4d4b; }
-
-.alert-msg {
+.p-alert-msg {
   display: none;
+  color: #fff;
   line-height: 40px;
   height: 40px;
   position: fixed;
@@ -310,10 +298,13 @@ input[type="submit"]:hover {
   z-index: 999;
   width: 100%;
   text-align: center; }
-  .alert-msg--sucess {
+  .p-alert-msg--sucess {
     background: #01b3e6; }
-  .alert-msg--err {
+  .p-alert-msg--err {
     background: #fe8a8b; }
+
+.p-area-error-msg {
+  color: lightcoral; }
 
 /*
  * ページネーション
@@ -340,11 +331,9 @@ input[type="submit"]:hover {
         text-decoration: none;
         color: #990073;
         border: solid 2px #990073;
-        border-radius: 3px;
-        transition: .4s; }
+        border-radius: 3px; }
         .p-pagination__list__list-item__button:hover {
-          background: #990073;
-          color: white; }
+          background: #FDF; }
         .p-pagination__list__list-item__button--select {
           background: #990073;
           color: white; }

@@ -15465,36 +15465,20 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+// 共通ＪＳ
+//
+// 役割：全てのページで読み込むＪＳ
+//
 (0, _jquery2.default)(function () {
 
+  //画面上部に表示するメッセージ用
   var $toggleMsg = (0, _jquery2.default)('.js-toggle-msg');
   if ($toggleMsg.length) {
     $toggleMsg.slideDown();
     setTimeout(function () {
       $toggleMsg.slideUp();
     }, 3000);
-  }
-
-  // お気に入り登録・削除
-  var $like, likeMovieId;
-  $like = (0, _jquery2.default)('.js-click-like') || null;
-  likeMovieId = $like.data('movie_id') || null;
-  if (likeMovieId !== undefined && likeMovieId !== null) {
-    $like.on('click', function () {
-      var $this = (0, _jquery2.default)(this);
-
-      _jquery2.default.ajax({
-        type: "POST",
-        url: "api/favorites.php",
-        data: { movieId: likeMovieId }
-      }).done(function (data) {
-        console.log('Ajax Success');
-        // クラス属性をtoggleでつけ外しする
-        $this.toggleClass('p-icn-like--active');
-      }).fail(function (msg) {
-        console.log('Ajax Error');
-      });
-    });
   }
 
   // フッターを最下部に固定
@@ -40447,10 +40431,18 @@ var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+// 動画詳細画面ＪＳ
+//
+// 役割：動画詳細画面のＪＳ
+//
+
 //イベントハブ
 var eventHub = new _vue2.default();
 
-//評価入力
+//
+// コメント、５段階評価の入力（vueコンポーネント）
+//
 _vue2.default.component('review-input', {
   props: ['movie_id'],
   data: function data() {
@@ -40460,7 +40452,9 @@ _vue2.default.component('review-input', {
     };
   },
   methods: {
-    //星がクリックされた
+    //
+    // 星がクリックされると、評価の数を変更される
+    //
     onStarChange: function onStarChange(e) {
 
       var base_attr = e.currentTarget.getAttribute('class');
@@ -40497,6 +40491,8 @@ _vue2.default.component('review-input', {
         comment: this.input_text,
         review: this.star_count
       }).then(function (response) {
+
+        //送信したコメントを即座に表示されるよう、review-panel-listに通知する
         eventHub.$emit('comment-update', _this.movie_id);
       }).catch(function (error) {
         console.log(error);
@@ -40506,12 +40502,16 @@ _vue2.default.component('review-input', {
   template: '\n                <div class="root">\n                    <div class="review-star-input">\n                        <i class="fas fa-star p-icn-star--active" @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                    </div>\n                    <div class="p-review-text-input">\n                        <textarea class="p-review-text-input__textarea" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="\u3069\u3046\u3067\u3057\u305F\u304B\uFF1F"></textarea>\n                        <button class="p-review-text-input__button" @click="onSubmit">\u9001\u4FE1</button>\n                    </div>\n                </div>\n             '
 });
 
+//
+// コメント、５段階評価の表示リスト（vueコンポーネント）
+//
 //評価パネルリスト
 _vue2.default.component('review-panel-list', {
   props: ['movie_id'],
   data: function data() {
     return {
-      info: null
+      info: null,
+      flg: false
     };
   },
 
@@ -40521,9 +40521,9 @@ _vue2.default.component('review-panel-list', {
 
       var url = 'http://localhost/curation/public/api/comments/list.json?movie_id=' + movie_id;
       _axios2.default.get(url).then(function (response) {
-        return _this2.info = response.data;
+        _this2.info = response.data;
+        _this2.flg = true;
       });
-      console.log(this.info);
     }
   },
   created: function created() {
@@ -40536,10 +40536,12 @@ _vue2.default.component('review-panel-list', {
     this.onCommentUpdate(this.movie_id);
   },
 
-  template: '\n                    <div>\n                        <review-panel v-for="comment in info.comment_list" :comment="comment"></review-panel>\n                    </div>\n                  '
+  template: '\n                    <div v-if="flg">\n                        <review-panel v-for="comment in info.comment_list" :comment="comment"></review-panel>\n                    </div>\n                  '
 });
 
-//評価パネル
+//
+// コメント、５段階評価の表示パネル（review-panel-listの子コンポーネント）
+//
 _vue2.default.component('review-panel', {
   props: ['comment'],
   computed: {
@@ -40558,6 +40560,9 @@ _vue2.default.component('review-panel', {
   template: '\n                    <div class="p-review-area">\n                        <ul class="p-review-area__ul">\n                            <li class="p-review-area__ul__li" v-for="n in this.Review" ><i class="fas fa-star p-icn-star--active"></i></li>\n                            <li class="p-review-area__ul__li" v-for="n in this.zeroReview" ><i class="fas fa-star p-icn-star "></i></li>\n                        </ul>\n                        <p>{{comment.user_name}}<span class="u-from-now">{{this.fromNow}}</span></p>\n                        <p>{{comment.comment}}</p>\n                    </div>\n                  '
 });
 
+//
+// ルートvueインスタンス（コメント５段階評価、入力側）
+//
 new _vue2.default({
   el: '#review_input',
   data: function data() {
@@ -40567,8 +40572,36 @@ new _vue2.default({
   }
 });
 
+//
+// ルートvueインスタンス（コメント５段階評価、表示側）
+//
 new _vue2.default({
   el: '#review_list'
+});
+
+(0, _jquery2.default)(function () {
+
+  // お気に入り登録・削除
+  var $like, likeMovieId;
+  $like = (0, _jquery2.default)('.js-click-like') || null;
+  likeMovieId = $like.data('movie_id') || null;
+  if (likeMovieId !== undefined && likeMovieId !== null) {
+    $like.on('click', function () {
+      var $this = (0, _jquery2.default)(this);
+
+      _jquery2.default.ajax({
+        type: "POST",
+        url: "api/favorites.php",
+        data: { movieId: likeMovieId }
+      }).done(function (data) {
+        console.log('Ajax Success');
+        // クラス属性をtoggleでつけ外しする
+        $this.toggleClass('p-icn-like--active');
+      }).fail(function (msg) {
+        console.log('Ajax Error');
+      });
+    });
+  }
 });
 
 /***/ })

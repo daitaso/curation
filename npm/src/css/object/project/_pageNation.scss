@@ -29,11 +29,12 @@
         color: #990073;
         border: solid 2px #990073;
         border-radius: 3px;
-        transition: .4s;
+        //transition: .4s;
+
         &:hover{
-          background: #990073;
-          color: white;
+          background: #FDF;
         }
+
         &--select{
           background: #990073;
           color: white;

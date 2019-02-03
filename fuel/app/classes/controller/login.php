@@ -36,9 +36,8 @@ class Controller_Login extends Controller{
 
                 //ログイン試行
                 if(Auth::login($formData['username'], $formData['password'])){
-                    //ログイン成功！
-                    Session::set_flash('sucMsg','ログインが成功しました！');
 
+                    //ログイン成功！
                     //ホーム画面へ遷移
                     Response::redirect('home');
                 }else{

@@ -12,6 +12,9 @@ class Controller_Api_Movies extends Controller_Rest{
     //
     // 動画一覧に表示する情報生成し、返却する
     //
+    //返却値：
+    // 動画一覧リスト表示に必要な情報（JSON）
+    //
     public function get_list(){
 
         //GETパラメータ取得
@@ -19,6 +22,8 @@ class Controller_Api_Movies extends Controller_Rest{
         $page     = Input::Get('page');
         $favorite = Input::Get('favorite');
         $category = Input::Get('category');
+        $show_keyword  = false;
+        $show_category = false;
 
         if(is_null($page)){
             $page = 1;  //page指定が無い時は1ページ目とみなす
@@ -27,13 +32,19 @@ class Controller_Api_Movies extends Controller_Rest{
 
         $sql = '';
         if(is_null($favorite)) {
-            //通常検索orタグ検索orカテゴリー検索
-            if(!is_null($keyword)){
-                $sql = 'SELECT * FROM MOVIES INNER JOIN TAGS ON MOVIES.MOVIE_ID = TAGS.MOVIE_ID WHERE TAGS.KEYWORD = \''.$keyword.'\' ORDER BY MOVIES.CREATED_AT DESC ';
-            }else if(!is_null($category)) {
-                $sql = 'SELECT * FROM MOVIES WHERE MOVIES.SITE_ID = \''.$category.'\' ORDER BY MOVIES.CREATED_AT DESC ';
-            }else{
-                $sql = 'SELECT * FROM MOVIES ORDER BY MOVIES.CREATED_AT DESC ';
+            try {
+                //通常検索orタグ検索orカテゴリー検索
+                if(!is_null($keyword)){
+                    $sql = 'SELECT * FROM MOVIES INNER JOIN TAGS ON MOVIES.MOVIE_ID = TAGS.MOVIE_ID WHERE TAGS.KEYWORD = \''.$keyword.'\' ORDER BY MOVIES.CREATED_AT DESC ';
+                    $show_keyword = true;
+                }else if(!is_null($category)) {
+                    $sql = 'SELECT * FROM MOVIES WHERE MOVIES.SITE_ID = \''.$category.'\' ORDER BY MOVIES.CREATED_AT DESC ';
+                    $show_category = true;
+                }else{
+                    $sql = 'SELECT * FROM MOVIES ORDER BY MOVIES.CREATED_AT DESC ';
+                }
+            }catch (Exception $e){
+                Log::info('MoviesAPI get_list Excepiton');
             }
         }else{
             //お気に入り一覧
@@ -80,7 +91,9 @@ class Controller_Api_Movies extends Controller_Rest{
             'start_idx'  => $start_idx,
             'end_idx'    => $end_idx,
             'keyword'    => $keyword,
-            'category'   => $category
+            'category'   => $category,
+            'show_keyword' => $show_keyword,
+            'show_category' => $show_category
         ));
     }
 }

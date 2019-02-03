@@ -10450,36 +10450,20 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+// 共通ＪＳ
+//
+// 役割：全てのページで読み込むＪＳ
+//
 (0, _jquery2.default)(function () {
 
+  //画面上部に表示するメッセージ用
   var $toggleMsg = (0, _jquery2.default)('.js-toggle-msg');
   if ($toggleMsg.length) {
     $toggleMsg.slideDown();
     setTimeout(function () {
       $toggleMsg.slideUp();
     }, 3000);
-  }
-
-  // お気に入り登録・削除
-  var $like, likeMovieId;
-  $like = (0, _jquery2.default)('.js-click-like') || null;
-  likeMovieId = $like.data('movie_id') || null;
-  if (likeMovieId !== undefined && likeMovieId !== null) {
-    $like.on('click', function () {
-      var $this = (0, _jquery2.default)(this);
-
-      _jquery2.default.ajax({
-        type: "POST",
-        url: "api/favorites.php",
-        data: { movieId: likeMovieId }
-      }).done(function (data) {
-        console.log('Ajax Success');
-        // クラス属性をtoggleでつけ外しする
-        $this.toggleClass('p-icn-like--active');
-      }).fail(function (msg) {
-        console.log('Ajax Error');
-      });
-    });
   }
 
   // フッターを最下部に固定

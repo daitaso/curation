@@ -6,7 +6,7 @@
 $sucMsg = Session::get_flash('sucMsg');
 if(!empty($sucMsg)):
     ?>
-    <div class="alert-msg success js-toggle-msg">
+    <div class="p-alert-msg p-alert-msg--sucess js-toggle-msg">
         <?=$sucMsg?>
     </div>
     <?php
@@ -14,14 +14,14 @@ endif;
 $errMsg = Session::get_flash('errMsg');
 if(!empty($errMsg)):
     ?>
-    <div class="alert-msg err js-toggle-msg">
+    <div class="p-alert-msg p-alert-msg--err js-toggle-msg">
         <?=$errMsg ?>
     </div>
     <?php
 endif;
 ?>
 <header class="l-header">
-    <div class="l-header--width-980">
+    <div class="l-header__width-980">
         <!--ロゴ表示領域-->
         <div class="p-logo-container">
             <a  href="home.php"><?=Asset::img('logo.png',array('class' => 'p-logo-container__img'))?></a>

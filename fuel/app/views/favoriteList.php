@@ -1,16 +1,17 @@
 <!--お気に入り一覧画面(view)-->
 <!--役割：お気に入り一覧画面のview-->
-<main class="l-site-980">
+<div class="l-site-980">
+
+    <h1>お気に入り一覧</h1>
 
     <!--　動画一覧リスト（お気に入り）    -->
     <div id="favorite_list">
-        <h1>お気に入り一覧</h1>
 
         <!-- vueコンポーネント（検索結果ヘッダー）       -->
-        <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword"></search-result-header>
+        <search-result-header :start_idx="info.start_idx" :end_idx="info.end_idx" :keyword="info.keyword" :category="info.category" :show_keyword="info.show_keyword" :show_category="info.show_category"></search-result-header>
 
         <!-- vueコンポーネント（パネルリスト）       -->
-        <div class="p-panel-list">
+        <div class="p-panel-list ">
             <thumb-panel
                     v-for="movie in info.movie_list"
                     v-bind:movie_id="movie.movie_id"
@@ -21,7 +22,7 @@
 
         <!-- vueコンポーネント（ページネーション）       -->
         <div class="p-pagination">
-            <pagenation :pages="info.pages" v-on:page-change="onPageChange"></pagenation>
+            <pagenation :pages="info.pages" :cur_page="info.cur_page" :keyword="info.keyword" :category="info.category" v-on:page-change="onPageChange"></pagenation>
         </div>
     </div>
-</main>
+</div>

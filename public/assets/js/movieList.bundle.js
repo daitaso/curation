@@ -15465,36 +15465,20 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+// 共通ＪＳ
+//
+// 役割：全てのページで読み込むＪＳ
+//
 (0, _jquery2.default)(function () {
 
+  //画面上部に表示するメッセージ用
   var $toggleMsg = (0, _jquery2.default)('.js-toggle-msg');
   if ($toggleMsg.length) {
     $toggleMsg.slideDown();
     setTimeout(function () {
       $toggleMsg.slideUp();
     }, 3000);
-  }
-
-  // お気に入り登録・削除
-  var $like, likeMovieId;
-  $like = (0, _jquery2.default)('.js-click-like') || null;
-  likeMovieId = $like.data('movie_id') || null;
-  if (likeMovieId !== undefined && likeMovieId !== null) {
-    $like.on('click', function () {
-      var $this = (0, _jquery2.default)(this);
-
-      _jquery2.default.ajax({
-        type: "POST",
-        url: "api/favorites.php",
-        data: { movieId: likeMovieId }
-      }).done(function (data) {
-        console.log('Ajax Success');
-        // クラス属性をtoggleでつけ外しする
-        $this.toggleClass('p-icn-like--active');
-      }).fail(function (msg) {
-        console.log('Ajax Error');
-      });
-    });
   }
 
   // フッターを最下部に固定
@@ -40445,16 +40429,26 @@ var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//
+// 動画一覧画面ＪＳ
+//
+// 役割：動画一覧画面のＪＳ
+//
+
 //イベントハブ
 var eventHub = new _vue2.default();
 
-//検索結果ヘッダー
+//
+// 検索結果ヘッダー（vueコンポーネント）
+//
 _vue2.default.component('search-result-header', {
-  props: ['start_idx', 'end_idx', 'keyword', 'category'],
-  template: '\n                    <h1>\u691C\u7D22\u7D50\u679C\u3000{{ start_idx + 1 }}\u3000\u2015\u3000{{ end_idx }} \u30AD\u30FC\u30EF\u30FC\u30C9\u3000{{keyword}} \u30AB\u30C6\u30B4\u30EA\u30FC {{category}}</h1>\n                  '
+  props: ['start_idx', 'end_idx', 'keyword', 'category', 'show_keyword', 'show_category'],
+  template: '\n                <h1>\u691C\u7D22\u7D50\u679C\u3000{{ start_idx + 1 }}\u3000\u2015\u3000{{ end_idx }} <span v-if="show_keyword">\u3000\u30BF\u30B0\u3000{{keyword}}</span><span v-else-if="show_category">\u3000\u30AB\u30C6\u30B4\u30EA\u30FC\u3000{{category}}</span></h1>\n            '
 });
 
-//サムネイルパネル
+//
+// サムネイルパネル（vueコンポーネント）
+//
 _vue2.default.component('thumb-panel', {
   props: ['movie_id', 'title', 'created_at'],
   computed: {
@@ -40467,9 +40461,11 @@ _vue2.default.component('thumb-panel', {
   template: '\n                    <a :href="\'movieDetail.php?movie_id=\' + movie_id " class="p-panel-list__panel">\n                        <img class ="p-panel-list__panel__img" :src="\'./assets/img/thumb/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="p-panel-list__panel__title">{{title}}</p>\n                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
 });
 
-//ページネーション
+//
+// ページネーション（vueコンポーネント）
+//
 _vue2.default.component('pagenation', {
-  props: ['pages', 'keyword', 'cur_page'],
+  props: ['pages', 'keyword', 'cur_page', 'category'],
   computed: {
     createPushClass: function createPushClass() {
       var cur_page = this.cur_page;
@@ -40482,10 +40478,12 @@ _vue2.default.component('pagenation', {
       };
     }
   },
-  template: '\n                <ul class="p-pagination__list">\n                    <li class="p-pagination__list__list-item" v-for="page in pages">\n                        <button class="p-pagination__list__list-item__button" v-bind:class="createPushClass(page)" v-on:click="$emit(\'page-change\',page,keyword,null)">{{page}}</button>\n                    </li>\n                </ul>\n             '
+  template: '\n                <ul class="p-pagination__list">\n                    <li class="p-pagination__list__list-item" v-for="page in pages">\n                        <button class="p-pagination__list__list-item__button" :class="createPushClass(page)" v-on:click="$emit(\'page-change\',page,keyword,category)">{{page}}</button>\n                    </li>\n                </ul>\n             '
 });
 
-//タグパネル
+//
+// タグパネル（vueコンポーネント）
+//
 _vue2.default.component('tag-panel', {
   props: ['keyword'],
   methods: {
@@ -40499,12 +40497,15 @@ _vue2.default.component('tag-panel', {
   },
   template: '\n                    <button class="p-tag-button " v-on:click="onTagChange(keyword,$event)">{{keyword}}</button>\n                  '
 });
-
+//
+// ルートvueインスタンス（動画一覧）
+//
 new _vue2.default({
   el: '#movie_list',
   data: function data() {
     return {
-      info: null
+      info: null,
+      flg: false
     };
   },
 
@@ -40520,7 +40521,8 @@ new _vue2.default({
         url += '&category=' + category;
       }
       _axios2.default.get(url).then(function (response) {
-        return _this.info = response.data;
+        _this.info = response.data;
+        _this.flg = true;
       });
     }
   },
@@ -40537,26 +40539,32 @@ new _vue2.default({
   }
 });
 
+//
+// ルートvueインスタンス（タグ一覧）
+//
 new _vue2.default({
   el: '#tag_list',
   data: function data() {
     return {
-      info: null
+      info: null,
+      flg: false
     };
   },
   mounted: function mounted() {
     var _this2 = this;
 
     _axios2.default.get('http://localhost/curation/public/api/tags/list.json').then(function (response) {
-      return _this2.info = response.data;
+      _this2.info = response.data;
+      _this2.flg = true;
     });
   },
   created: function created() {}
 });
 
 (0, _jquery2.default)(function () {
-
-  //カテゴリーが変更されたら
+  //
+  // カテゴリーが変更されたら動画リストに通知
+  //
   (0, _jquery2.default)('select').change(function () {
     var val = (0, _jquery2.default)(this).val() || null;
     eventHub.$emit('category-change', 1, null, val);

@@ -3,18 +3,28 @@ import axios from 'axios';
 import $ from 'jquery';
 import moment from 'moment';
 
+//
+// 動画一覧画面ＪＳ
+//
+// 役割：動画一覧画面のＪＳ
+//
+
 //イベントハブ
 let eventHub = new Vue()
 
-//検索結果ヘッダー
+//
+// 検索結果ヘッダー（vueコンポーネント）
+//
 Vue.component('search-result-header', {
-  props:['start_idx','end_idx','keyword','category'],
+  props:['start_idx','end_idx','keyword','category','show_keyword','show_category'],
   template: `
-                    <h1>検索結果　{{ start_idx + 1 }}　―　{{ end_idx }} キーワード　{{keyword}} カテゴリー {{category}}</h1>
-                  `
+                <h1>検索結果　{{ start_idx + 1 }}　―　{{ end_idx }} <span v-if="show_keyword">　タグ　{{keyword}}</span><span v-else-if="show_category">　カテゴリー　{{category}}</span></h1>
+            `
 })
 
-//サムネイルパネル
+//
+// サムネイルパネル（vueコンポーネント）
+//
 Vue.component('thumb-panel', {
   props:['movie_id','title','created_at'],
   computed: {
@@ -33,9 +43,11 @@ Vue.component('thumb-panel', {
                   `
 })
 
-//ページネーション
+//
+// ページネーション（vueコンポーネント）
+//
 Vue.component('pagenation', {
-  props:['pages','keyword','cur_page'],
+  props:['pages','keyword','cur_page','category'],
   computed: {
     createPushClass : function () {
       let cur_page = this.cur_page
@@ -51,13 +63,15 @@ Vue.component('pagenation', {
   template: `
                 <ul class="p-pagination__list">
                     <li class="p-pagination__list__list-item" v-for="page in pages">
-                        <button class="p-pagination__list__list-item__button" v-bind:class="createPushClass(page)" v-on:click="$emit('page-change',page,keyword,null)">{{page}}</button>
+                        <button class="p-pagination__list__list-item__button" :class="createPushClass(page)" v-on:click="$emit('page-change',page,keyword,category)">{{page}}</button>
                     </li>
                 </ul>
              `
 })
 
-//タグパネル
+//
+// タグパネル（vueコンポーネント）
+//
 Vue.component('tag-panel', {
   props:['keyword'],
   methods: {
@@ -74,12 +88,15 @@ Vue.component('tag-panel', {
                     <button class="p-tag-button " v-on:click="onTagChange(keyword,$event)">{{keyword}}</button>
                   `
 })
-
+//
+// ルートvueインスタンス（動画一覧）
+//
 new Vue({
   el: '#movie_list',
   data () {
     return {
-      info: null
+      info: null,
+      flg:false
     }
   },
   methods: {
@@ -93,7 +110,10 @@ new Vue({
       }
       axios
           .get(url)
-          .then(response => (this.info = response.data))
+          .then(response => {
+            this.info = response.data
+            this.flg  = true;
+          })
     }
   },
   created(){
@@ -111,25 +131,34 @@ new Vue({
 
 })
 
+//
+// ルートvueインスタンス（タグ一覧）
+//
 new Vue({
   el: '#tag_list',
   data () {
     return {
-      info: null
+      info: null,
+      flg: false
     }
   },
   mounted () {
     axios
         .get('http://localhost/curation/public/api/tags/list.json')
-        .then(response => (this.info = response.data))
+        .then(response => {
+          this.info = response.data
+          this.flg  = true
+        })
   },
   created(){
   }
 })
 
-$(function() {
 
-  //カテゴリーが変更されたら
+$(function() {
+  //
+  // カテゴリーが変更されたら動画リストに通知
+  //
   $('select').change(function () {
     var val = $(this).val() || null;
     eventHub.$emit('category-change', 1, null, val)
