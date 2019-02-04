@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import axios from 'axios';
 import moment from 'moment';
+
 //
 // お気に入り一覧画面ＪＳ
 //
@@ -78,7 +79,7 @@ new Vue({
   methods: {
     onPageChange: function (page) {
       axios
-          .get('http://localhost/curation/public/api/movies/list.json?page=' + page + '&favorite=on')
+          .get( 'api/movies/list.json?page=' + page + '&favorite=on')
           .then(response => {
             this.info = response.data
             this.flg = true

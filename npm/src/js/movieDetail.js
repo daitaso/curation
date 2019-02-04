@@ -51,13 +51,24 @@ Vue.component('review-input', {
         el = el.nextElementSibling
       }
     },
+    //テキストエリアに文字が入力された
     onKeyUp: function(e){
       this.input_text = e.currentTarget.value
+
+      //バリデーション（１文字～１４０文字以外は送信ボタンが押せない）
+      var $button = $('.js-review-button') || null;
+      if($button !== null){
+        if(this.input_text.length > 0 && this.input_text.length <= 140) {
+          $button.removeClass('p-review-text-input__button--cant-push').addClass('p-review-text-input__button--can-push')
+        }else{
+          $button.removeClass('p-review-text-input__button--can-push').addClass('p-review-text-input__button--cant-push')
+        }
+      }
     },
     //送信ボタンクリック
     onSubmit: function (e) {
 
-      axios.post('http://localhost/curation/public/api/comments/list.json', {
+      axios.post('api/comments/list.json', {
         movie_id: this.movie_id,
         comment:  this.input_text,
         review:   this.star_count
@@ -65,15 +76,20 @@ Vue.component('review-input', {
 
         //送信したコメントを即座に表示されるよう、review-panel-listに通知する
         eventHub.$emit('comment-update',this.movie_id)
+
+        //テキストアリアとボタンを元に戻す
+        $('.js-review-text').val('')
+        this.input_text = ''
+        $('.js-review-button').removeClass('p-review-text-input__button--can-push').addClass('p-review-text-input__button--cant-push')
+
       }).catch(error => {
         console.log(error);
       });
-
     }
   },
   template:
       `
-                <div class="root">
+                <div>
                     <div class="review-star-input">
                         <i class="fas fa-star p-icn-star--active" @click="onStarChange"></i>
                         <i class="fas fa-star p-icn-star " @click="onStarChange"></i>
@@ -82,8 +98,8 @@ Vue.component('review-input', {
                         <i class="fas fa-star p-icn-star " @click="onStarChange"></i>
                     </div>
                     <div class="p-review-text-input">
-                        <textarea class="p-review-text-input__textarea" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="どうでしたか？"></textarea>
-                        <button class="p-review-text-input__button" @click="onSubmit">送信</button>
+                        <textarea class="p-review-text-input__textarea js-review-text" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="どうでしたか？"></textarea>
+                        <button class="p-review-text-input__button p-review-text-input__button--cant-push js-review-button" @click="onSubmit">送信</button>
                     </div>
                 </div>
              `
@@ -103,9 +119,8 @@ Vue.component('review-panel-list', {
   },
   methods:{
     onCommentUpdate: function (movie_id) {
-      let url = 'http://localhost/curation/public/api/comments/list.json?movie_id=' + movie_id
       axios
-          .get(url)
+          .get('api/comments/list.json?movie_id=' + movie_id)
           .then(response => {
             this.info = response.data
             this.flg  = true

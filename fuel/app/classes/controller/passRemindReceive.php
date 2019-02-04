@@ -64,14 +64,15 @@ class Controller_PassRemindReceive extends Controller{
 
                     //新しいパスワードをメールで送信
                     $email = Email::forge();
-                    $email->from('e.curation.test@gmail.com');
+                    $email->from('info@ecuration.com');
                     $email->to(Session::get('auth_email'));
                     $email->subject('【パスワード再発行完了】｜E-CURATION');
+                    $url = Uri::base().'login.php';
                     $honbun = <<<EOT
 本メールアドレス宛にパスワードの再発行を致しました。
 下記のURLにて再発行パスワードをご入力頂き、ログインください。
 
-ログインページ：http://localhost/curation/public/login.php
+ログインページ：{$url}
 再発行パスワード：{$new_password}
 ※ログイン後、パスワードのご変更をお願い致します
 EOT;

@@ -38,19 +38,20 @@ class Controller_PassRemindSend extends Controller{
 
                     //メール送信
                     $email = Email::forge();
-                    $email->from('e.curation.test@gmail.com');
+                    $email->from('info@ecuration.com');
                     $email->to($formData['email']);
                     $email->subject('【パスワード再発行認証】｜E-CURATION');
+                    $url = Uri::base().'passRemindReceive.php';
                     $honbun = <<<EOT
 本メールアドレス宛にパスワード再発行のご依頼がありました。
 下記のURLにて認証キーをご入力頂くとパスワードが再発行されます。
 
-パスワード再発行認証キー入力ページ：http://localhost/public/passRemindRecieve.php
+パスワード再発行認証キー入力ページ：{$url}
 認証キー：{$auth_key}
 ※認証キーの有効期限は30分となります
 
 認証キーを再発行されたい場合は下記ページより再度再発行をお願い致します。
-http://localhost/public/passRemindSend.php
+{$url}
 EOT;
                     $email->body($honbun);
                     $email->send();

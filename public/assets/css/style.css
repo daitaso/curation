@@ -101,6 +101,7 @@ input[type="submit"]:hover {
 .l-site-980 {
   width: 980px;
   margin: 0 auto;
+  margin-bottom: 50px;
   /* コンテンツ */
   /* サイドバー */ }
   .l-site-980__contents {
@@ -116,11 +117,13 @@ input[type="submit"]:hover {
 
 .l-site-640 {
   width: 640px;
-  margin: 0 auto; }
+  margin: 0 auto;
+  margin-bottom: 50px; }
 
 .l-site-500 {
   width: 500px;
-  margin: 0 auto; }
+  margin: 0 auto;
+  margin-bottom: 50px; }
 
 /*
  * フッター
@@ -402,8 +405,6 @@ input[type="submit"]:hover {
       /* ※ブラウザが標準で付加する線を消したいとき */ }
   .p-review-text-input__button {
     float: left;
-    color: #fff;
-    background-color: #990073;
     border-color: transparent;
     border-radius: 100px;
     box-shadow: none;
@@ -414,6 +415,13 @@ input[type="submit"]:hover {
     text-align: center;
     margin-top: 20px;
     margin-left: 20px; }
+    .p-review-text-input__button--can-push {
+      color: #fff;
+      background-color: #990073; }
+    .p-review-text-input__button--cant-push {
+      color: #ccc;
+      background-color: #777;
+      pointer-events: none; }
 
 /* レビューリスト*/
 .p-review-area {

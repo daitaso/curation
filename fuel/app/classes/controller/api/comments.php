@@ -42,24 +42,23 @@ class Controller_Api_Comments extends Controller_Rest{
     //
     public function post_list(){
 
-        Log::info('koko');
-
-        //バリデーション
-        $val = Validation::forge();
-        if (!$val->run(Input::json())) {
-            Log::info('koko2');
-
-            //バリデーションエラー
-        }
-
         //入力パラメータ取得
         $movie_id = Input::json('movie_id');
         $comment  = Input::json('comment');
         $review   = Input::json('review');
 
+        //投稿者の名前
+        $user_name = '';
+        if(Auth::check()){
+            //ログイン時はユーザ名を使用
+            $user_name = Auth::get_screen_name();
+        }else{
+            $user_name = 'ゲスト';
+        }
+
         //DBへ挿入
         try {
-            DB::insert('comments')->set(array('movie_id' => $movie_id, 'user_name' => 'ゲスト', 'comment' => $comment, 'review' => $review, 'created_at' => date('Y-m-d H:i:s')))->execute();
+            DB::insert('comments')->set(array('movie_id' => $movie_id, 'user_name' => $user_name, 'comment' => $comment, 'review' => $review, 'created_at' => date('Y-m-d H:i:s')))->execute();
         }catch(Exception $e){
             Log::info('CommentsAPI post_list Excepiton');
         }

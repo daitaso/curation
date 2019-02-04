@@ -40479,14 +40479,25 @@ _vue2.default.component('review-input', {
         el = el.nextElementSibling;
       }
     },
+    //テキストエリアに文字が入力された
     onKeyUp: function onKeyUp(e) {
       this.input_text = e.currentTarget.value;
+
+      //バリデーション（１文字～１４０文字以外は送信ボタンが押せない）
+      var $button = (0, _jquery2.default)('.js-review-button') || null;
+      if ($button !== null) {
+        if (this.input_text.length > 0 && this.input_text.length <= 140) {
+          $button.removeClass('p-review-text-input__button--cant-push').addClass('p-review-text-input__button--can-push');
+        } else {
+          $button.removeClass('p-review-text-input__button--can-push').addClass('p-review-text-input__button--cant-push');
+        }
+      }
     },
     //送信ボタンクリック
     onSubmit: function onSubmit(e) {
       var _this = this;
 
-      _axios2.default.post('http://localhost/curation/public/api/comments/list.json', {
+      _axios2.default.post('api/comments/list.json', {
         movie_id: this.movie_id,
         comment: this.input_text,
         review: this.star_count
@@ -40494,12 +40505,17 @@ _vue2.default.component('review-input', {
 
         //送信したコメントを即座に表示されるよう、review-panel-listに通知する
         eventHub.$emit('comment-update', _this.movie_id);
+
+        //テキストアリアとボタンを元に戻す
+        (0, _jquery2.default)('.js-review-text').val('');
+        _this.input_text = '';
+        (0, _jquery2.default)('.js-review-button').removeClass('p-review-text-input__button--can-push').addClass('p-review-text-input__button--cant-push');
       }).catch(function (error) {
         console.log(error);
       });
     }
   },
-  template: '\n                <div class="root">\n                    <div class="review-star-input">\n                        <i class="fas fa-star p-icn-star--active" @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                    </div>\n                    <div class="p-review-text-input">\n                        <textarea class="p-review-text-input__textarea" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="\u3069\u3046\u3067\u3057\u305F\u304B\uFF1F"></textarea>\n                        <button class="p-review-text-input__button" @click="onSubmit">\u9001\u4FE1</button>\n                    </div>\n                </div>\n             '
+  template: '\n                <div>\n                    <div class="review-star-input">\n                        <i class="fas fa-star p-icn-star--active" @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                        <i class="fas fa-star p-icn-star " @click="onStarChange"></i>\n                    </div>\n                    <div class="p-review-text-input">\n                        <textarea class="p-review-text-input__textarea js-review-text" @keyup="onKeyUp" name="comment" id="" cols="10" rows="10" placeholder="\u3069\u3046\u3067\u3057\u305F\u304B\uFF1F"></textarea>\n                        <button class="p-review-text-input__button p-review-text-input__button--cant-push js-review-button" @click="onSubmit">\u9001\u4FE1</button>\n                    </div>\n                </div>\n             '
 });
 
 //
@@ -40519,8 +40535,7 @@ _vue2.default.component('review-panel-list', {
     onCommentUpdate: function onCommentUpdate(movie_id) {
       var _this2 = this;
 
-      var url = 'http://localhost/curation/public/api/comments/list.json?movie_id=' + movie_id;
-      _axios2.default.get(url).then(function (response) {
+      _axios2.default.get('api/comments/list.json?movie_id=' + movie_id).then(function (response) {
         _this2.info = response.data;
         _this2.flg = true;
       });

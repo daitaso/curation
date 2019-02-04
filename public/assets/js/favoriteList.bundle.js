@@ -40494,7 +40494,7 @@ new _vue2.default({
     onPageChange: function onPageChange(page) {
       var _this = this;
 
-      _axios2.default.get('http://localhost/curation/public/api/movies/list.json?page=' + page + '&favorite=on').then(function (response) {
+      _axios2.default.get('api/movies/list.json?page=' + page + '&favorite=on').then(function (response) {
         _this.info = response.data;
         _this.flg = true;
       });

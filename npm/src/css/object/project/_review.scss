@@ -24,8 +24,6 @@
   }
   &__button{
     float: left;
-    color: #fff;
-    background-color: #990073;
     border-color: transparent;
     border-radius: 100px;
     box-shadow: none;
@@ -36,6 +34,16 @@
     text-align: center;
     margin-top: 20px;
     margin-left: 20px;
+    &--can-push{
+      color: #fff;
+      background-color: #990073;
+    }
+    &--cant-push{
+      color: #ccc;
+      background-color: #777;
+      pointer-events : none;
+    }
+
   }
 
 }

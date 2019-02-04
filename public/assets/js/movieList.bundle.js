@@ -40513,7 +40513,7 @@ new _vue2.default({
     onPageChange: function onPageChange(page, keyword, category) {
       var _this = this;
 
-      var url = 'http://localhost/curation/public/api/movies/list.json?page=' + page;
+      var url = 'api/movies/list.json?page=' + page;
       if (keyword !== null) {
         url += '&keyword=' + keyword;
       }
@@ -40553,7 +40553,7 @@ new _vue2.default({
   mounted: function mounted() {
     var _this2 = this;
 
-    _axios2.default.get('http://localhost/curation/public/api/tags/list.json').then(function (response) {
+    _axios2.default.get('api/tags/list.json').then(function (response) {
       _this2.info = response.data;
       _this2.flg = true;
     });

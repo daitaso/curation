@@ -101,7 +101,7 @@ new Vue({
   },
   methods: {
     onPageChange: function (page,keyword,category) {
-      let url = 'http://localhost/curation/public/api/movies/list.json?page=' + page
+      let url = 'api/movies/list.json?page=' + page
       if(keyword !== null){
         url += '&keyword=' + keyword
       }
@@ -144,7 +144,7 @@ new Vue({
   },
   mounted () {
     axios
-        .get('http://localhost/curation/public/api/tags/list.json')
+        .get('api/tags/list.json')
         .then(response => {
           this.info = response.data
           this.flg  = true
