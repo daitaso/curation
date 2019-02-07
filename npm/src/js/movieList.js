@@ -35,7 +35,7 @@ Vue.component('thumb-panel', {
     }
   },
   template: `
-                    <a :href="'movieDetail.php?movie_id=' + movie_id " class="p-panel-list__panel">
+                    <a :href="'moviedetail.php?movie_id=' + movie_id " class="p-panel-list__panel">
                         <img class ="p-panel-list__panel__img" :src="'./assets/img/thumb/' + movie_id + '.jpg'" :alt="title">
                         <p class="p-panel-list__panel__title">{{title}}</p>
                         <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>

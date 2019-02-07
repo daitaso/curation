@@ -19,5 +19,5 @@
     ?>
 
     <p>ご指定のメールアドレスにお送りした【パスワード再発行認証】メール内にある「認証キー」をご入力下さい。</p>
-    <?=$passRemindReceive?>
+    <?=$passremindreceive?>
 </div>

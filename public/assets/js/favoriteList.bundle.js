@@ -40455,7 +40455,7 @@ _vue2.default.component('thumb-panel', {
       return (0, _moment2.default)(date, 'YYYY/MM/DD HH:mm:S').fromNow();
     }
   },
-  template: '\n                    <a :href="\'movieDetail.php?movie_id=\' + movie_id " class="p-panel-list__panel">\n                        <img class ="p-panel-list__panel__img" :src="\'./assets/img/thumb/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="p-panel-list__panel__title">{{title}}</p>\n                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
+  template: '\n                    <a :href="\'moviedetail.php?movie_id=\' + movie_id " class="p-panel-list__panel">\n                        <img class ="p-panel-list__panel__img" :src="\'./assets/img/thumb/\' + movie_id + \'.jpg\'" :alt="title">\n                        <p class="p-panel-list__panel__title">{{title}}</p>\n                        <span class="p-panel-list__panel__fromnow">{{this.fromNow}}</span>\n                    </a>\n                  '
 });
 
 //

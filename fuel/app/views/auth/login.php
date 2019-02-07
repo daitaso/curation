@@ -24,5 +24,5 @@
     <?=$login?>
 
     <!-- パスワードリマインダーへのリンク    -->
-    <a href="<?php echo Uri::base() ?>passRemindSend">ログインのユーザーネームまたはパスワードを忘れた</a>
+    <a href="<?php echo Uri::base() ?>passremindsend">ログインのユーザーネームまたはパスワードを忘れた</a>
 </div>

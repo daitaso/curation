@@ -30,9 +30,9 @@ endif;
         <!--メニュー表示領域-->
         <nav class="p-nav">
             <ul class="p-nav__ul">
-                <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="movieList.php">動画一覧</a></li>
+                <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="movielist.php">動画一覧</a></li>
                 <?php if(Auth::check()) { ?>
-                    <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="favoriteList.php">お気に入り一覧</a></li>
+                    <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="favoritelist.php">お気に入り一覧</a></li>
                     <li class="p-nav__ul__li p-nav__ul__li--reverse"><a class="p-nav__ul__li--reverse__a" href="logout.php">ログアウト</a></li>
                 <?php }else{ ?>
                     <li class="p-nav__ul__li"><a class="p-nav__ul__li__a" href="signup.php">サインアップ</a></li>

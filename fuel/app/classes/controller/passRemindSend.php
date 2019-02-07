@@ -41,7 +41,7 @@ class Controller_PassRemindSend extends Controller{
                     $email->from('info@ecuration.com');
                     $email->to($formData['email']);
                     $email->subject('【パスワード再発行認証】｜E-CURATION');
-                    $url = Uri::base().'passRemindReceive.php';
+                    $url = Uri::base().'passremindreceive.php';
                     $honbun = <<<EOT
 本メールアドレス宛にパスワード再発行のご依頼がありました。
 下記のURLにて認証キーをご入力頂くとパスワードが再発行されます。
@@ -64,7 +64,7 @@ EOT;
                     Session::set_flash('sucMsg','登録メールアドレス宛に再発行のご案内メールを送付しました！');
 
                     //パスワードリマインダー（受信）画面へ遷移
-                    Response::redirect('passRemindReceive');
+                    Response::redirect('passremindreceive');
 
                 }else{
                     //DBに存在しないEmail
@@ -83,9 +83,9 @@ EOT;
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $view->set('contents',View::forge('passRemindSend'));
+        $view->set('contents',View::forge('passremindsend'));
         $view->set('footer',View::forge('template/footer'));
-        $view->set_global('passRemindSend', $form->build(''), false);
+        $view->set_global('passremindsend', $form->build(''), false);
         $view->set_global('error', $error);
         $child_view = View::forge('template/script');
         $child_view->set('jsname','passRemindSend');

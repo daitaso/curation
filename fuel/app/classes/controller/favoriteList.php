@@ -12,11 +12,11 @@ class Controller_FavoriteList extends Controller{
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $child_view = View::forge('favoriteList');
+        $child_view = View::forge('favoritelist');
         $view->set('contents',$child_view);
         $view->set('footer',View::forge('template/footer'));
         $child_view = View::forge('template/script');
-        $child_view->set('jsname','favoriteList');
+        $child_view->set('jsname','favoritelist');
         $view->set('script',$child_view);
 
         return $view;

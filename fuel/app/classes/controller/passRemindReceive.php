@@ -12,7 +12,7 @@ class Controller_PassRemindReceive extends Controller{
         $auth_key = Session::get('auth_key');
         if ( $auth_key === false ){
             //未送信なら、送信画面へ遷移
-            Response::redirect('passRemindSend');
+            Response::redirect('passremindsend');
         }
 
         //入力フォーム設定
@@ -101,9 +101,9 @@ EOT;
         $view = View::forge('template/index');
         $view->set('head',View::forge('template/head'));
         $view->set('header',View::forge('template/header'));
-        $view->set('contents',View::forge('passRemindReceive'));
+        $view->set('contents',View::forge('passremindreceive'));
         $view->set('footer',View::forge('template/footer'));
-        $view->set_global('passRemindReceive', $form->build(''), false);
+        $view->set_global('passremindreceive', $form->build(''), false);
         $view->set_global('error', $error);
         $vvv = View::forge('template/script');
         $vvv->set('jsname','passRemindReceive');
